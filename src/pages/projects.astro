@@ -10,44 +10,42 @@ const projects = [
 		period: '2025 - actualidad',
 		role: 'Desarrollador Full Stack',
 		description:
-			'Aplicacion web usada en la fabrica Granalia para gestionar pedidos, clientes, transportes, productos, listas de precios y facturas.',
+			'Sistema full-stack para digitalizar la gestion comercial de una fabrica: pedidos, clientes, listas de precios, comprobantes PDF, estadisticas y facturacion fiscal integrada con ARCA.',
 		details: [
-			'API FastAPI con SQLAlchemy, Alembic y PostgreSQL.',
-			'Frontend React/Vite con Tailwind CSS.',
-			'Autenticacion con cookie HTTP-only, token CSRF y roles admin/operator.',
-			'Generacion y descarga de comprobantes PDF desde la API.',
-			'Despliegue con Docker Compose, Caddy, healthchecks y logging estructurado.',
+			'Reemplace planillas y procesos manuales por una herramienta operativa centralizada.',
+			'Implemente facturacion interna y fiscal, roles de usuario, historial y descarga de PDFs.',
+			'Disene una base mantenible para operar en produccion con Docker, Caddy y PostgreSQL.',
 		],
-		stack: ['FastAPI', 'React', 'PostgreSQL', 'SQLAlchemy', 'Alembic', 'Docker', 'Caddy'],
+		stack: ['FastAPI', 'React', 'PostgreSQL', 'ARCA', 'Docker', 'Caddy'],
+		blogUrl: '/blog/granalia-sistema-facturacion/',
 	},
 	{
 		name: 'BeLeadAI',
 		period: '2025',
 		role: 'Desarrollador de Software',
 		description:
-			'Plataforma de automatizacion de prospeccion en Instagram que analiza perfiles, genera mensajes personalizados con IA y automatiza flujos operativos.',
+			'Producto para convertir Instagram en un canal de prospeccion: extrae audiencias, analiza perfiles, gestiona destinatarios y automatiza mensajes desde una extension conectada a una API privada.',
 		details: [
-			'Scraping avanzado y automatizacion de navegador.',
-			'Orquestacion de tareas y generacion de mensajes personalizados con LLMs.',
-			'Extension Chrome MV3 conectada a una API privada.',
-			'Configuracion persistida, control de versiones de cliente y distribucion por GitHub Releases.',
+			'Construido como plataforma backend + extension Chrome MV3 para operar flujos comerciales.',
+			'Incluye seguimiento de jobs, limites, resultados y actualizaciones de cliente.',
+			'Preparado para distribuir versiones con artefactos verificables por GitHub Releases.',
 		],
-		stack: ['Python', 'Selenium', 'LLMs', 'Chrome MV3', 'APIs', 'GitHub Releases'],
+		stack: ['FastAPI', 'MySQL', 'Redis', 'Chrome MV3', 'WebSockets', 'GitHub Releases'],
+		blogUrl: '/blog/beleadai-automatizacion-prospeccion/',
 	},
 	{
 		name: 'El Switcher',
 		period: '2024',
 		role: 'Backend Developer y Scrum Master',
 		description:
-			'Plataforma web interactiva multijugador para jugar en linea al juego de mesa El Switcher, desarrollada en equipo durante Ingenieria de Software en FAMAF.',
+			'Plataforma web multijugador para jugar online a un juego de mesa, desarrollada en equipo con Scrum durante Ingenieria de Software en FAMAF.',
 		details: [
-			'Desarrollo backend con FastAPI, Python, WebSockets y SQLite.',
-			'Diseno de arquitectura backend con enfoque hexagonal y vertical slicing.',
-			'Implementacion de reglas de juego, validaciones, partidas y bugfixes.',
-			'Rol de Scrum Master durante un sprint: planning, dailies, tickets y seguimiento del flujo.',
-			'Pruebas unitarias e integracion con Pytest y Vitest.',
+			'Lidere el Sprint 2 como Scrum Master y aporte como desarrollador backend.',
+			'Implemente reglas de juego, partidas, validaciones, WebSockets y bugfixes.',
+			'El proyecto alcanzo alta cobertura de pruebas y entregas iterativas durante tres sprints.',
 		],
 		stack: ['FastAPI', 'WebSockets', 'React', 'Pytest', 'Vitest', 'Scrum', 'Jira'],
+		blogUrl: '/blog/el-switcher-backend-scrum/',
 	},
 ];
 ---
@@ -91,6 +89,7 @@ const projects = [
 							<ul class="tag-list">
 								{project.stack.map((item) => <li>{item}</li>)}
 							</ul>
+							<a class="case-link" href={project.blogUrl}>Leer caso tecnico</a>
 						</article>
 					))
 				}
@@ -123,25 +122,38 @@ const projects = [
 		margin-bottom: 0;
 	}
 	.role {
-		background: #111827;
+		background: var(--accent-dim);
+		border: 1px solid rgba(99, 102, 241, 0.2);
 		border-radius: 999px;
-		color: white;
+		color: var(--accent-light);
+		font-family: var(--font-mono);
 		font-size: 0.88rem;
-		font-weight: 700;
+		font-weight: 500;
 		margin: 0;
 		padding: 0.4rem 0.7rem;
 		white-space: nowrap;
 	}
 	.description {
+		color: var(--text-secondary);
 		font-size: 1.12rem;
 		max-width: 860px;
 	}
 	.details {
+		color: var(--text-secondary);
 		margin: 1rem 0 0;
 		padding-left: 1.25rem;
 	}
 	.details li {
 		margin-bottom: 0.4rem;
+	}
+	.case-link {
+		display: inline-flex;
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
+		font-weight: 500;
+		letter-spacing: 0.04em;
+		margin-top: 1.25rem;
+		text-transform: uppercase;
 	}
 	@media (max-width: 720px) {
 		.project-header {

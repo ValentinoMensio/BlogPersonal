@@ -1,11 +1,13 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import ParticleNetworkBackground from './ParticleNetworkBackground.astro';
 ---
 
-<header>
+<ParticleNetworkBackground />
+<header class="site-header">
 	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
+		<a href="/" class="brand"><span class="brand-slash">/</span>{SITE_TITLE}</a>
 		<div class="internal-links">
 			<HeaderLink href="/">Inicio</HeaderLink>
 			<HeaderLink href="/projects">Proyectos</HeaderLink>
@@ -14,53 +16,101 @@ import HeaderLink from './HeaderLink.astro';
 		</div>
 	</nav>
 </header>
+
 <style>
-	header {
+	.site-header {
+		-webkit-backdrop-filter: blur(12px);
+		backdrop-filter: blur(12px);
+		background-color: #0a0c0f;
+		background-color: rgba(10, 12, 15, 0.92);
+		border-bottom: 1px solid var(--border);
+		color: var(--text-primary);
 		margin: 0;
-		padding: 0 1em;
-		background: white;
-		box-shadow: 0 2px 8px rgba(var(--black), 5%);
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
+		padding: 0 1.5em;
+		position: sticky;
+		top: 0;
+		z-index: 50;
 	}
 
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
 	nav {
-		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		max-width: 1120px;
-		margin: 0 auto;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: var(--black);
-		border-bottom: 4px solid transparent;
-		text-decoration: none;
-	}
-	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
-	}
-	.internal-links {
 		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-end;
+		gap: 1rem;
+		height: 56px;
+		justify-content: space-between;
+		margin: 0 auto;
+		max-width: 1120px;
 	}
+
+	.brand {
+		color: var(--text-primary);
+		font-family: var(--font-mono);
+		font-size: 0.95rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		text-decoration: none;
+		transition: color 0.15s;
+	}
+
+	.brand:hover {
+		color: var(--accent-light);
+	}
+
+	.brand-slash {
+		color: var(--accent-light);
+		margin-right: 1px;
+	}
+
+	.internal-links {
+		align-items: center;
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	.internal-links :global(a) {
+		border-bottom: none;
+		border-radius: 6px;
+		color: var(--text-secondary);
+		font-family: var(--font-sans);
+		font-size: 0.88rem;
+		font-weight: 500;
+		padding: 0.4em 0.75em;
+		text-decoration: none;
+		transition: color 0.15s, background 0.15s;
+	}
+
+	.internal-links :global(a:hover) {
+		background: rgba(255, 255, 255, 0.05);
+		color: var(--text-primary);
+	}
+
+	.internal-links :global(a.active) {
+		background: var(--accent-dim);
+		border-bottom: none;
+		color: var(--text-primary);
+	}
+
 	@media (max-width: 720px) {
+		.site-header {
+			padding: 0 1em;
+		}
+
 		nav {
 			align-items: flex-start;
 			flex-direction: column;
-			padding: 0.75rem 0;
+			gap: 0.5rem;
+			height: auto;
+			padding: 0.85rem 0;
 		}
-		nav a {
-			padding: 0.35em 0.5em;
+
+		.internal-links {
+			flex-wrap: wrap;
+			gap: 0.1rem;
+		}
+
+		.internal-links :global(a) {
+			font-size: 0.84rem;
+			padding: 0.35em 0.6em;
 		}
 	}
 </style>

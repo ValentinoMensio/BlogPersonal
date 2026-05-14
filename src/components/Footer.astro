@@ -15,10 +15,13 @@ const today = new Date();
 </footer>
 <style>
 	footer {
+		background: var(--bg);
+		border-top: 1px solid var(--border);
+		color: var(--text-secondary);
 		padding: 2.5em 1em 4em;
-		background: #0f172a;
-		color: rgba(255, 255, 255, 0.72);
+		position: relative;
 		text-align: center;
+		z-index: 10;
 	}
 	footer p {
 		margin: 0 0 1rem;
@@ -30,10 +33,10 @@ const today = new Date();
 		gap: 0.75rem 1.25rem;
 	}
 	.footer-links a {
-		color: white;
+		color: var(--text-primary);
 		text-decoration: none;
 	}
 	.footer-links a:hover {
-		text-decoration: underline;
+		color: var(--accent-light);
 	}
 </style>

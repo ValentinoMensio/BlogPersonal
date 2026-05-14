@@ -98,6 +98,10 @@ import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } fr
 		font-size: 1.1rem;
 		margin-top: 1.25rem;
 	}
+	.card p,
+	.skills-list {
+		color: var(--text-secondary);
+	}
 	.skills-list {
 		padding-left: 1.25rem;
 	}
@@ -105,11 +109,12 @@ import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } fr
 		margin-bottom: 0.75rem;
 	}
 	.contact-card {
-		background: #111827;
-		color: white;
+		background: var(--bg-elevated);
+		border: 1px solid var(--border);
+		color: var(--text-primary);
 	}
 	.contact-card h2 {
-		color: white;
+		color: var(--text-primary);
 	}
 	.contact-links {
 		display: flex;
@@ -117,12 +122,18 @@ import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } fr
 		gap: 0.75rem;
 	}
 	.contact-links a {
-		border: 1px solid rgba(255, 255, 255, 0.22);
-		border-radius: 999px;
-		color: white;
-		font-weight: 700;
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
+		font-weight: 500;
 		padding: 0.55rem 0.9rem;
 		text-decoration: none;
+	}
+	.contact-links a:hover {
+		border-color: var(--accent-light);
+		color: var(--accent-light);
 	}
 	@media (max-width: 720px) {
 		.resume-grid {
