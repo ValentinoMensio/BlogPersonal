@@ -1,0 +1,154 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+
+const projects = [
+	{
+		name: 'Granalia',
+		period: '2025 - actualidad',
+		role: 'Desarrollador Full Stack',
+		description:
+			'Aplicacion web usada en la fabrica Granalia para gestionar pedidos, clientes, transportes, productos, listas de precios y facturas.',
+		details: [
+			'API FastAPI con SQLAlchemy, Alembic y PostgreSQL.',
+			'Frontend React/Vite con Tailwind CSS.',
+			'Autenticacion con cookie HTTP-only, token CSRF y roles admin/operator.',
+			'Generacion y descarga de comprobantes PDF desde la API.',
+			'Despliegue con Docker Compose, Caddy, healthchecks y logging estructurado.',
+		],
+		stack: ['FastAPI', 'React', 'PostgreSQL', 'SQLAlchemy', 'Alembic', 'Docker', 'Caddy'],
+	},
+	{
+		name: 'BeLeadAI',
+		period: '2025',
+		role: 'Desarrollador de Software',
+		description:
+			'Plataforma de automatizacion de prospeccion en Instagram que analiza perfiles, genera mensajes personalizados con IA y automatiza flujos operativos.',
+		details: [
+			'Scraping avanzado y automatizacion de navegador.',
+			'Orquestacion de tareas y generacion de mensajes personalizados con LLMs.',
+			'Extension Chrome MV3 conectada a una API privada.',
+			'Configuracion persistida, control de versiones de cliente y distribucion por GitHub Releases.',
+		],
+		stack: ['Python', 'Selenium', 'LLMs', 'Chrome MV3', 'APIs', 'GitHub Releases'],
+	},
+	{
+		name: 'El Switcher',
+		period: '2024',
+		role: 'Backend Developer y Scrum Master',
+		description:
+			'Plataforma web interactiva multijugador para jugar en linea al juego de mesa El Switcher, desarrollada en equipo durante Ingenieria de Software en FAMAF.',
+		details: [
+			'Desarrollo backend con FastAPI, Python, WebSockets y SQLite.',
+			'Diseno de arquitectura backend con enfoque hexagonal y vertical slicing.',
+			'Implementacion de reglas de juego, validaciones, partidas y bugfixes.',
+			'Rol de Scrum Master durante un sprint: planning, dailies, tickets y seguimiento del flujo.',
+			'Pruebas unitarias e integracion con Pytest y Vitest.',
+		],
+		stack: ['FastAPI', 'WebSockets', 'React', 'Pytest', 'Vitest', 'Scrum', 'Jira'],
+	},
+];
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<BaseHead
+			title={`Proyectos | ${SITE_TITLE}`}
+			description="Proyectos personales y academicos de Valentino Mensio: Granalia, BeLeadAI y El Switcher."
+		/>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="page-hero">
+				<p class="eyebrow">Proyectos</p>
+				<h1>Software construido alrededor de problemas concretos.</h1>
+				<p class="lead">
+					Estos proyectos resumen mi experiencia en backend, automatizacion, scraping, productos web,
+					testing y despliegues. Incluyen sistemas academicos, productos propios y software usado en
+					operacion real.
+				</p>
+			</section>
+
+			<section class="projects-list">
+				{
+					projects.map((project) => (
+						<article class="project-detail card">
+							<div class="project-header">
+								<div>
+									<p class="eyebrow">{project.period}</p>
+									<h2>{project.name}</h2>
+								</div>
+								<p class="role">{project.role}</p>
+							</div>
+							<p class="description">{project.description}</p>
+							<ul class="details">
+								{project.details.map((item) => <li>{item}</li>)}
+							</ul>
+							<ul class="tag-list">
+								{project.stack.map((item) => <li>{item}</li>)}
+							</ul>
+						</article>
+					))
+				}
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-hero {
+		max-width: 900px;
+		padding: 3rem 0 1rem;
+	}
+	.projects-list {
+		display: grid;
+		gap: 1.25rem;
+		margin-top: 2rem;
+	}
+	.project-detail {
+		padding: 1.5rem;
+	}
+	.project-header {
+		align-items: start;
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+	}
+	.project-header h2 {
+		margin-bottom: 0;
+	}
+	.role {
+		background: #111827;
+		border-radius: 999px;
+		color: white;
+		font-size: 0.88rem;
+		font-weight: 700;
+		margin: 0;
+		padding: 0.4rem 0.7rem;
+		white-space: nowrap;
+	}
+	.description {
+		font-size: 1.12rem;
+		max-width: 860px;
+	}
+	.details {
+		margin: 1rem 0 0;
+		padding-left: 1.25rem;
+	}
+	.details li {
+		margin-bottom: 0.4rem;
+	}
+	@media (max-width: 720px) {
+		.project-header {
+			flex-direction: column;
+		}
+		.role {
+			white-space: normal;
+		}
+	}
+</style>

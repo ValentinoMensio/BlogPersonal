@@ -1,5 +1,8 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
+export const SITE_TITLE = 'Valentino Mensio';
+export const SITE_DESCRIPTION =
+	'Desarrollador de software backend especializado en automatizacion, scraping y sistemas web.';
 
-export const SITE_TITLE = 'Astro Blog';
-export const SITE_DESCRIPTION = 'Welcome to my website!';
+export const CONTACT_EMAIL = 'valentinomensio@gmail.com';
+export const CONTACT_PHONE = '+54 9 3547 608293';
+export const GITHUB_URL = 'https://github.com/valentinomensio';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/valentinomensio';

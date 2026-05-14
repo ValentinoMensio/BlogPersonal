@@ -13,12 +13,16 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
 			main {
 				width: 960px;
+			}
+			.blog-header {
+				max-width: 760px;
+				margin-bottom: 2rem;
 			}
 			ul {
 				display: flex;
@@ -89,6 +93,14 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
+			<header class="blog-header">
+				<p class="eyebrow">Blog</p>
+				<h1>Notas tecnicas y proyectos.</h1>
+				<p class="lead">
+					Escribo sobre backend, automatizacion, scraping, arquitectura, testing y productos que voy
+					desarrollando.
+				</p>
+			</header>
 			<section>
 				<ul>
 					{
