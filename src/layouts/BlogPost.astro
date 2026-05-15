@@ -8,7 +8,7 @@ import Header from '../components/Header.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, heroImageZoom } = Astro.props;
 ---
 
 <html lang="es">
@@ -21,6 +21,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				margin: 0;
 			}
 			.hero-image {
+				border-radius: 12px;
+				overflow: hidden;
 				width: 100%;
 			}
 			.hero-image img {
@@ -28,6 +30,10 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				margin: 0 auto;
 				border-radius: 12px;
 				box-shadow: var(--shadow-card);
+			}
+			.hero-image--zoom img {
+				transform: scale(1.07);
+				transform-origin: center center;
 			}
 			.prose {
 				width: 720px;
@@ -59,7 +65,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Header />
 		<main>
 			<article>
-				<div class="hero-image">
+				<div class:list={['hero-image', heroImageZoom && 'hero-image--zoom']}>
 					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
 				</div>
 				<div class="prose">
