@@ -1,6 +1,6 @@
 export const SITE_TITLE = 'Valentino Mensio';
 export const SITE_DESCRIPTION =
-	'Desarrollador de software backend especializado en automatización, scraping y sistemas web.';
+	'Desarrollador full-stack y product builder especializado en herramientas web, automatización y scraping.';
 
 export const CONTACT_EMAIL = 'valentinomensio@gmail.com';
 export const CONTACT_PHONE = '+54 9 3547 608293';
