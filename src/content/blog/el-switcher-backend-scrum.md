@@ -1,107 +1,107 @@
 ---
 title: 'El Switcher: backend, WebSockets, arquitectura y Scrum'
-description: 'Experiencia tecnica desarrollando una plataforma web multijugador con FastAPI, WebSockets, React, testing, arquitectura hexagonal y liderazgo Scrum.'
+description: 'Experiencia técnica desarrollando una plataforma web multijugador con FastAPI, WebSockets, React, testing, arquitectura hexagonal y liderazgo Scrum.'
 pubDate: 'May 11 2026'
 heroImage: '../../assets/blog-placeholder-3.jpg'
 ---
 
-El Switcher fue una plataforma web interactiva para jugar online a un juego de mesa. El proyecto se desarrollo durante Ingenieria de Software en FAMAF, en un contexto academico que simulaba un entorno profesional con cliente, sprints, entregas, testing, revisiones y roles Scrum.
+El Switcher fue una plataforma web interactiva para jugar online a un juego de mesa. El proyecto se desarrolló durante Ingeniería de Software en FAMAF, en un contexto académico que simulaba un entorno profesional con cliente, sprints, entregas, testing, revisiones y roles Scrum.
 
-Mi participacion combino dos responsabilidades: desarrollador backend y Scrum Master durante el Sprint 2.
+Mi participación combinó dos responsabilidades: desarrollador backend y Scrum Master durante el Sprint 2.
 
 ## Contexto del proyecto
 
-El objetivo era replicar la experiencia del juego fisico en una aplicacion web multijugador. El sistema debia implementar reglas de juego, partidas, jugadores, cartas, turnos, tablero, validaciones y comunicacion en tiempo real.
+El objetivo era replicar la experiencia del juego físico en una aplicación web multijugador. El sistema debía implementar reglas de juego, partidas, jugadores, cartas, turnos, tablero, validaciones y comunicación en tiempo real.
 
-El equipo trabajo durante tres sprints, aproximadamente dos meses, con entregas al final de cada sprint. Cada entrega incluia demostracion, analisis de cobertura y revision con docentes/clientes responsables de los requerimientos.
+El equipo trabajó durante tres sprints, aproximadamente dos meses, con entregas al final de cada sprint. Cada entrega incluía demostración, análisis de cobertura y revisión con docentes/clientes responsables de los requerimientos.
 
 Stack principal:
 
 - Backend: FastAPI, Python, WebSockets y SQLite.
 - Frontend: React y JavaScript/TypeScript.
 - Testing: Pytest y Vitest.
-- Gestion: Jira y Scrum.
+- Gestión: Jira y Scrum.
 
 ## Mi rol como Scrum Master
 
-Durante el Sprint 2 facilite reuniones agiles, planning poker, dailies, seguimiento de bloqueos y definicion de tickets. El foco fue mejorar el flujo de trabajo, reducir ambiguedad y mantener criterios de aceptacion claros.
+Durante el Sprint 2 facilité reuniones ágiles, planning poker, dailies, seguimiento de bloqueos y definición de tickets. El foco fue mejorar el flujo de trabajo, reducir ambigüedad y mantener criterios de aceptación claros.
 
 Las tareas de Scrum Master incluyeron:
 
 - Facilitar dailies y planning.
 - Crear y priorizar tickets en Jira.
-- Definir criterios de aceptacion.
+- Definir criterios de aceptación.
 - Dar seguimiento al progreso del sprint.
-- Detectar bloqueos y coordinar resolucion.
-- Mantener alineado el trabajo tecnico con los objetivos del sprint.
+- Detectar bloqueos y coordinar resolución.
+- Mantener alineado el trabajo técnico con los objetivos del sprint.
 
-Un punto importante fue que el flujo de tickets se mantuvo corto: cuando una tarea pasaba a `To Do`, avanzaba rapidamente a revision. Esto fue posible por la claridad de tickets y por acordar la API antes de implementar.
+Un punto importante fue que el flujo de tickets se mantuvo corto: cuando una tarea pasaba a `To Do`, avanzaba rápidamente a revisión. Esto fue posible por la claridad de tickets y por acordar la API antes de implementar.
 
-## Contribucion backend
+## Contribución backend
 
-Como desarrollador backend trabaje en funcionalidades centrales del juego y en organizacion del repositorio.
+Como desarrollador backend trabajé en funcionalidades centrales del juego y en organización del repositorio.
 
 Tickets propios:
 
-- Organizacion de la arquitectura del backend.
+- Organización de la arquitectura del backend.
 - Funcionalidad para abandonar partidas no iniciadas.
-- Logica para iniciar una partida.
-- Sanitizacion y normalizacion de codigo.
-- Busqueda y validacion de figuras resaltadas en el tablero.
+- Lógica para iniciar una partida.
+- Sanitización y normalización de código.
+- Búsqueda y validación de figuras resaltadas en el tablero.
 - Manejo del color prohibido del juego.
 
 Trabajo en pair programming:
 
-- Creacion de jugador.
-- Creacion de partida.
-- Logica para jugar una carta de figura.
+- Creación de jugador.
+- Creación de partida.
+- Lógica para jugar una carta de figura.
 
 Bugfixes:
 
 - Cambio de color prohibido al bloquear una figura.
-- Correccion de errores en cartas de figura.
-- Resolucion de conflictos de merge.
+- Corrección de errores en cartas de figura.
+- Resolución de conflictos de merge.
 - Ajustes en valores esperados para endpoints de usuarios.
 
 ## Arquitectura
 
-El backend se organizo con un enfoque de arquitectura hexagonal y vertical slicing. La intencion fue separar reglas de negocio, transporte HTTP/WebSocket, persistencia y casos de uso.
+El backend se organizó con un enfoque de arquitectura hexagonal y vertical slicing. La intención fue separar reglas de negocio, transporte HTTP/WebSocket, persistencia y casos de uso.
 
-Este enfoque ayudo a que las funcionalidades de juego no quedaran acopladas a detalles de FastAPI o SQLite. Tambien facilito probar modulos por comportamiento y mantener el codigo legible a medida que crecia el numero de reglas.
+Este enfoque ayudó a que las funcionalidades de juego no quedaran acopladas a detalles de FastAPI o SQLite. También facilitó probar módulos por comportamiento y mantener el código legible a medida que crecía el número de reglas.
 
-Vertical slicing fue util porque cada funcionalidad se podia trabajar como una unidad: endpoint o evento, validacion, caso de uso, persistencia y tests asociados.
+Vertical slicing fue útil porque cada funcionalidad se podía trabajar como una unidad: endpoint o evento, validación, caso de uso, persistencia y tests asociados.
 
 ## WebSockets y experiencia multijugador
 
-El caracter multijugador requeria sincronizar estado entre clientes. FastAPI y WebSockets permitieron comunicar cambios de partidas y acciones relevantes en tiempo real.
+El carácter multijugador requería sincronizar estado entre clientes. FastAPI y WebSockets permitieron comunicar cambios de partidas y acciones relevantes en tiempo real.
 
-El desafio no era solo abrir una conexion, sino mantener reglas consistentes: que una partida se pueda iniciar bajo condiciones validas, que un jugador no realice acciones fuera de turno, que las cartas respeten reglas del tablero y que las acciones invalidas sean rechazadas de forma clara.
+El desafío no era solo abrir una conexión, sino mantener reglas consistentes: que una partida se pueda iniciar bajo condiciones válidas, que un jugador no realice acciones fuera de turno, que las cartas respeten reglas del tablero y que las acciones inválidas sean rechazadas de forma clara.
 
 ## Testing
 
-El proyecto uso Pytest en backend y Vitest en frontend. En backend implemente pruebas unitarias e integracion con tecnica de clases de equivalencia para cubrir comportamientos validos e invalidos.
+El proyecto usó Pytest en backend y Vitest en frontend. En backend implementé pruebas unitarias e integración con técnica de clases de equivalencia para cubrir comportamientos válidos e inválidos.
 
 Resultados destacados del proyecto:
 
 - Frontend: 30 archivos de prueba.
 - Frontend: 254 pruebas.
-- Frontend: 83.77% de cobertura en declaraciones y lineas.
+- Frontend: 83.77% de cobertura en declaraciones y líneas.
 - Frontend: 87.87% de cobertura en ramas.
 - Frontend: 96.42% de cobertura en funciones.
 - Backend: 142 pruebas.
-- Backend: 3992 lineas analizadas.
+- Backend: 3992 líneas analizadas.
 - Backend: 95% de cobertura global.
 
-Durante el Sprint 1 hubo deuda tecnica por mockear completamente la API. En el Sprint 2 ajustamos la estrategia hacia mockeo directo de base de datos para obtener pruebas mas precisas y cercanas a las necesidades reales del sistema.
+Durante el Sprint 1 hubo deuda técnica por mockear completamente la API. En el Sprint 2 ajustamos la estrategia hacia mockeo directo de base de datos para obtener pruebas más precisas y cercanas a las necesidades reales del sistema.
 
 ## Proceso de desarrollo
 
 El proceso fue incremental. En funcionalidades con requerimientos poco claros o decisiones de base de datos, usamos pair programming para reducir incertidumbre y mejorar la calidad de las decisiones.
 
-Tambien trabajamos con revision de codigo antes de completar tickets. Esto ayudo a resolver conflictos de merge, detectar errores de reglas y mantener consistencia en el backend.
+También trabajamos con revisión de código antes de completar tickets. Esto ayudó a resolver conflictos de merge, detectar errores de reglas y mantener consistencia en el backend.
 
 ## Resultado
 
-El Switcher fue valioso porque combino desarrollo tecnico real con coordinacion de equipo. Me permitio practicar backend con reglas de dominio, WebSockets, testing, arquitectura y liderazgo agil en un mismo proyecto.
+El Switcher fue valioso porque combinó desarrollo técnico real con coordinación de equipo. Me permitió practicar backend con reglas de dominio, WebSockets, testing, arquitectura y liderazgo ágil en un mismo proyecto.
 
-La principal conclusion tecnica fue que, incluso en un proyecto academico, la claridad de tickets, la definicion temprana de API, una arquitectura separada y una buena estrategia de pruebas tienen impacto directo en la velocidad y calidad del equipo.
+La principal conclusión técnica fue que, incluso en un proyecto académico, la claridad de tickets, la definición temprana de API, una arquitectura separada y una buena estrategia de pruebas tienen impacto directo en la velocidad y calidad del equipo.

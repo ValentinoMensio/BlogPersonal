@@ -10,11 +10,11 @@ const projects = [
 		period: '2025 - actualidad',
 		role: 'Desarrollador Full Stack',
 		description:
-			'Sistema full-stack para digitalizar la gestion comercial de una fabrica: pedidos, clientes, listas de precios, comprobantes PDF, estadisticas y facturacion fiscal integrada con ARCA.',
+			'Sistema full-stack para digitalizar la gestión comercial de una fábrica: pedidos, clientes, listas de precios, comprobantes PDF, estadísticas y facturación fiscal integrada con ARCA.',
 		details: [
-			'Reemplace planillas y procesos manuales por una herramienta operativa centralizada.',
-			'Implemente facturacion interna y fiscal, roles de usuario, historial y descarga de PDFs.',
-			'Disene una base mantenible para operar en produccion con Docker, Caddy y PostgreSQL.',
+			'Reemplacé planillas y procesos manuales por una herramienta operativa centralizada.',
+			'Implementé facturación interna y fiscal, roles de usuario, historial y descarga de PDFs.',
+			'Diseñé una base mantenible para operar en producción con Docker, Caddy y PostgreSQL.',
 		],
 		stack: ['FastAPI', 'React', 'PostgreSQL', 'ARCA', 'Docker', 'Caddy'],
 		blogUrl: '/blog/granalia-sistema-facturacion/',
@@ -24,10 +24,10 @@ const projects = [
 		period: '2025',
 		role: 'Desarrollador de Software',
 		description:
-			'Producto para convertir Instagram en un canal de prospeccion: extrae audiencias, analiza perfiles, gestiona destinatarios y automatiza mensajes desde una extension conectada a una API privada.',
+			'Producto para convertir Instagram en un canal de prospección: extrae audiencias, analiza perfiles, gestiona destinatarios y automatiza mensajes desde una extensión conectada a una API privada.',
 		details: [
-			'Construido como plataforma backend + extension Chrome MV3 para operar flujos comerciales.',
-			'Incluye seguimiento de jobs, limites, resultados y actualizaciones de cliente.',
+			'Construido como plataforma backend + extensión Chrome MV3 para operar flujos comerciales.',
+			'Incluye seguimiento de jobs, límites, resultados y actualizaciones de cliente.',
 			'Preparado para distribuir versiones con artefactos verificables por GitHub Releases.',
 		],
 		stack: ['FastAPI', 'MySQL', 'Redis', 'Chrome MV3', 'WebSockets', 'GitHub Releases'],
@@ -38,11 +38,11 @@ const projects = [
 		period: '2024',
 		role: 'Backend Developer y Scrum Master',
 		description:
-			'Plataforma web multijugador para jugar online a un juego de mesa, desarrollada en equipo con Scrum durante Ingenieria de Software en FAMAF.',
+			'Plataforma web multijugador para jugar online a un juego de mesa, desarrollada en equipo con Scrum durante Ingeniería de Software en FAMAF.',
 		details: [
-			'Lidere el Sprint 2 como Scrum Master y aporte como desarrollador backend.',
-			'Implemente reglas de juego, partidas, validaciones, WebSockets y bugfixes.',
-			'El proyecto alcanzo alta cobertura de pruebas y entregas iterativas durante tres sprints.',
+			'Lideré el Sprint 2 como Scrum Master y aporté como desarrollador backend.',
+			'Implementé reglas de juego, partidas, validaciones, WebSockets y bugfixes.',
+			'El proyecto alcanzó alta cobertura de pruebas y entregas iterativas durante tres sprints.',
 		],
 		stack: ['FastAPI', 'WebSockets', 'React', 'Pytest', 'Vitest', 'Scrum', 'Jira'],
 		blogUrl: '/blog/el-switcher-backend-scrum/',
@@ -55,7 +55,7 @@ const projects = [
 	<head>
 		<BaseHead
 			title={`Proyectos | ${SITE_TITLE}`}
-			description="Proyectos personales y academicos de Valentino Mensio: Granalia, BeLeadAI y El Switcher."
+			description="Proyectos personales y académicos de Valentino Mensio: Granalia, BeLeadAI y El Switcher."
 		/>
 	</head>
 	<body>
@@ -65,9 +65,9 @@ const projects = [
 				<p class="eyebrow">Proyectos</p>
 				<h1>Software construido alrededor de problemas concretos.</h1>
 				<p class="lead">
-					Estos proyectos resumen mi experiencia en backend, automatizacion, scraping, productos web,
-					testing y despliegues. Incluyen sistemas academicos, productos propios y software usado en
-					operacion real.
+					Estos proyectos resumen mi experiencia en backend, automatización, scraping, productos web,
+					testing y despliegues. Incluyen sistemas académicos, productos propios y software usado en
+					operación real.
 				</p>
 			</section>
 
@@ -89,7 +89,7 @@ const projects = [
 							<ul class="tag-list">
 								{project.stack.map((item) => <li>{item}</li>)}
 							</ul>
-							<a class="case-link" href={project.blogUrl}>Leer caso tecnico</a>
+							<a class="case-link" href={project.blogUrl}>Leer caso técnico</a>
 						</article>
 					))
 				}
