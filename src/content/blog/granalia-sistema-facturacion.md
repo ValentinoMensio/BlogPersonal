@@ -1,5 +1,5 @@
 ---
-title: 'Granalia: sistema full-stack de gestión comercial y facturación fiscal'
+title: 'Granalia: de planillas manuales a un sistema web de gestión y facturación fiscal'
 description: 'Diseño técnico de una aplicación productiva con React, FastAPI, PostgreSQL, PDFs, roles, remitos, snapshots históricos e integración fiscal con ARCA.'
 pubDate: 'May 13 2026'
 heroImage: '../../assets/Granalia/head.png'
@@ -12,13 +12,13 @@ El proyecto combina frontend React, backend FastAPI y PostgreSQL. La decisión p
 
 ## Problema
 
-La operación necesitaba resolver tres problemas al mismo tiempo:
+La operación necesitaba resolver tres problemas principales:
 
 - Reducir errores de carga manual en pedidos, clientes, productos y transportes.
-- Mantener historial confiable aunque cambien precios, productos o datos de clientes.
-- Permitir gestión comercial con remitos y emisión fiscal legal desde un mismo flujo operativo.
+- Mantener un historial confiable aunque cambien precios, productos o datos fiscales.
+- Unificar gestión comercial, remitos internos y emisión fiscal legal en un mismo flujo.
 
-Para eso modelé el sistema alrededor de remitos, comprobantes fiscales, ítems, clientes, catálogos, listas de precios y lotes de emisión. Cada documento guarda snapshots históricos de los datos relevantes para que un cambio futuro en el catálogo no altere operaciones ya emitidas.
+Para resolverlo, modelé el sistema alrededor de documentos comerciales, comprobantes fiscales, ítems, clientes, catálogos, listas de precios y lotes de emisión. Cada documento guarda snapshots históricos de los datos relevantes, de modo que una modificación futura en el catálogo no altere operaciones ya emitidas.
 
 ## Arquitectura
 
@@ -35,19 +35,16 @@ El frontend usa React 18, React Router, Vite, Tailwind CSS y Context API. La apl
 
 ## Casos de uso principales
 
-El sistema soporta un flujo comercial completo:
+El sistema cubre el flujo comercial completo:
 
-- Login seguro con cookie HTTP-only, CSRF y roles `admin` / `operator`.
-- Carga de pedidos con cliente, transporte, notas, productos, cantidades, descuentos y bonificaciones.
-- Generación de remitos de gestión con numeración independiente.
-- Emisión fiscal legal de Factura A mediante WSFEv1, solicitando CAE a ARCA.
-- Emisión combinada entre remito de gestión y factura fiscal.
-- Notas de crédito fiscales asociadas a comprobantes autorizados.
-- Gestión de clientes con datos operativos y fiscales.
-- Gestión de productos, presentaciones, precios, peso neto e IVA fiscal.
-- Carga de listas de precios PDF con preview, versionado y activación.
-- Historial con filtros, descarga de PDFs, edición controlada y eliminación según reglas.
-- Estadísticas comerciales visibles solo para administradores.
+- Login seguro con roles de administrador y operador.
+- Gestión de clientes, productos, transportes y listas de precios.
+- Carga de pedidos con descuentos, bonificaciones y notas.
+- Generación de remitos internos con numeración propia.
+- Emisión fiscal de Factura A integrada con ARCA.
+- Notas de crédito asociadas a comprobantes autorizados.
+- Historial operativo con filtros, detalles y descarga de PDFs.
+- Estadísticas comerciales restringidas a administradores.
 
 > Los datos visibles en las capturas son ficticios y fueron cargados únicamente para mostrar los casos de uso del sistema.
 
@@ -144,37 +141,18 @@ También se auditan requests y responses en una tabla dedicada, pero con payload
 
 La base usa PostgreSQL 16 con claves foráneas, constraints, índices únicos y JSONB para estructuras flexibles como descuentos, notas, reglas comerciales y snapshots.
 
-Tablas relevantes:
-
-- `app_users`.
-- `customers`.
-- `transports`.
-- `products`.
-- `product_offerings`.
-- `price_lists` y `price_list_versions`.
-- `catalogs`.
-- `invoice_batches`.
-- `invoices` e `invoice_items`.
-- `invoice_tax_breakdown`.
-- `invoice_sequences`.
-- `credit_note_item_sources`.
-- `arca_requests`.
+El modelo de datos separa usuarios, clientes, productos, listas de precios, remitos, comprobantes fiscales, ítems, secuencias de numeración, notas de crédito y auditoría de requests fiscales.
 
 Las decisiones de integridad más importantes fueron separar numeración de remitos y numeración fiscal, guardar snapshots históricos y representar estados explícitos para facturas fiscales: `draft`, `authorizing`, `authorized`, `rejected` y `error`.
 
 ## Seguridad
 
-El sistema implementa medidas de seguridad de aplicación y de operación:
+El sistema incorpora seguridad a nivel de aplicación y operación:
 
-- Sesiones con cookies HTTP-only.
-- Token CSRF.
-- Roles `admin` y `operator`.
-- Rutas protegidas en backend y frontend.
-- Validaciones con Pydantic.
-- Constraints en PostgreSQL.
-- CORS configurable.
-- Cookies seguras en producción.
-- Validación estricta de secretos productivos.
+- Sesiones con cookies HTTP-only, token CSRF y CORS configurable.
+- Roles `admin` / `operator` con rutas protegidas en backend y frontend.
+- Validaciones con Pydantic y constraints en PostgreSQL.
+- Cookies seguras en producción y validación estricta de secretos.
 - Contraseña adicional para autorización fiscal.
 - Logging sin exposición de secretos.
 

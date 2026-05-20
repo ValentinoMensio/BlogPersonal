@@ -25,33 +25,17 @@ Stack principal:
 
 ## Casos de uso principales
 
-El producto cubría el ciclo completo para entrar al juego, coordinar una sala e iniciar una partida multijugador:
+El sistema cubría el flujo completo de una partida multijugador:
 
-- Registro de jugador con validaciones de nombre, longitud, caracteres permitidos y normalización de espacios.
-- Creación de salas con nombre, cantidad mínima y máxima de jugadores, host y contraseña opcional.
-- Listado de salas disponibles con estado en tiempo real: cantidad de jugadores, sala iniciada, sala privada y capacidad.
-- Selección de sala desde el lobby, con bloqueo de ingreso si la sala está llena o ya comenzó.
-- Ingreso a salas públicas o privadas, validando contraseña cuando corresponde.
-- Salida de sala antes de iniciar la partida.
-- Cierre de sala cuando el host abandona, notificando al resto de jugadores.
-- Lobby de sala con participantes conectados, botón de inicio visible para el host y actualizaciones por WebSocket.
-- Inicio de partida solo por el host y solo si se alcanza el mínimo de jugadores.
-- Creación automática del tablero de 36 fichas de colores ordenadas aleatoriamente.
-- Creación de cartas de movimiento y cartas de figura al iniciar la partida.
-- Reparto inicial de cartas: 3 cartas de movimiento y cartas de figura para cada jugador.
-- Creación del orden de turnos.
-- Sincronización de estado global de partida y estado privado de cada jugador por WebSocket.
-- Reconexión controlada: si un jugador abre una segunda conexión, se cierra la conexión anterior.
-- Paso de turno, incluyendo vuelta completa entre jugadores.
-- Abandono de partida en curso, con finalización si queda una cantidad insuficiente de jugadores.
-- Selección de cartas solo cuando corresponde al turno del jugador.
-- Juego de cartas de movimiento para intercambiar fichas del tablero.
-- Cancelación de movimientos parciales antes de confirmar una jugada.
-- Juego de cartas de figura cuando la forma seleccionada coincide con la carta.
-- Validación de figuras por forma, color, bordes del tablero, separación entre fichas y pertenencia al tablero.
-- Bloqueo de figuras de otros jugadores.
-- Manejo de color prohibido para evitar jugadas inválidas sobre figuras de ese color.
-- Rechazo explícito de acciones inválidas: jugador inexistente, partida inexistente, jugador fuera de partida, carta ajena, carta bloqueada o acción fuera de turno.
+- Registro de jugadores y validación de nombres.
+- Creación, listado e ingreso a salas públicas o privadas.
+- Lobby en tiempo real con participantes, host y condiciones de inicio.
+- Inicio de partida con creación automática de tablero, cartas y turnos.
+- Sincronización de estado global y estado privado por WebSocket.
+- Validación de acciones según turno, jugador, carta y reglas del tablero.
+- Juego de cartas de movimiento y cartas de figura.
+- Manejo de abandono, reconexión y finalización de partidas.
+- Rechazo explícito de acciones inválidas.
 
 ## Capturas del producto
 

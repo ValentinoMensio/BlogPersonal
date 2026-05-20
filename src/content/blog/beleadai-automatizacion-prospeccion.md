@@ -1,34 +1,29 @@
 ---
-title: 'BeLeadAI: automatización de prospección con backend y extensión Chrome MV3'
+title: 'BeLeadAI: plataforma de prospección con backend, automatización y extensión Chrome'
 description: 'Arquitectura de una plataforma de prospección para Instagram con FastAPI, MySQL, Redis, colas, WebSockets, contratos públicos y extensión Chrome MV3.'
 pubDate: 'May 12 2026'
 heroImage: '../../assets/BeLead/logoBeLead.png'
 heroImageCompact: true
 ---
 
-BeLeadAI es una plataforma para convertir Instagram en un canal de prospección comercial. Permite extraer audiencias desde cuentas objetivo, analizar perfiles, seleccionar destinatarios y enviar mensajes desde una extensión Chrome conectada a una API privada.
+BeLeadAI es una plataforma de prospección comercial que combina backend, automatización y una extensión Chrome MV3. El producto permite convertir Instagram en una fuente de leads: extrae audiencias desde cuentas objetivo, analiza perfiles, selecciona destinatarios y encola campañas de mensajes desde el navegador del usuario.
 
-El sistema está dividido en dos piezas principales: un backend operativo para análisis, colas y control de ejecución, y una extensión Chrome MV3 que actúa como cliente instalado por el usuario.
+La parte visible es una extensión simple de usar, pero por debajo hay un sistema backend con jobs, colas, límites, contratos de API, WebSockets, versionado, distribución y observabilidad.
+
+El sistema está dividido en dos piezas principales: un backend privado que controla análisis, cuotas, estado y ejecución; y una extensión Chrome instalada por el usuario, que actúa como cliente operativo conectado a la API.
 
 ## Casos de uso principales
 
-BeLeadAI cubre un flujo completo de prospección, desde la configuración inicial hasta el seguimiento del envío:
+BeLeadAI cubre un flujo completo de prospección:
 
-- Configurar la extensión con `API Base URL` HTTPS y API key.
-- Validar conexión contra la API privada con `GET /ext/v2/ping`.
-- Detectar la cuenta autorizada desde la que se enviarán mensajes.
-- Consultar límites de uso y cuotas disponibles por cliente.
-- Extraer followings de una cuenta objetivo para crear una base inicial de leads.
-- Encolar análisis de perfiles para clasificar prospectos por rubro, señales de actividad y potencial.
-- Elegir profundidad de análisis: básico, profundo, todos los rubros o rubros específicos.
-- Seleccionar destinatarios desde resultados previos o desde flujos completos de extracción y análisis.
-- Filtrar candidatos pendientes y evitar duplicados o contactos ya enviados.
-- Configurar prompts y mensajes manuales o asistidos por IA.
-- Encolar campañas de envío desde la extensión instalada en el navegador.
-- Mantener liveness del sender con heartbeat, pull de tareas, reporte de resultados y WebSocket.
-- Monitorear jobs, progreso, resultados, errores y estado de entrega.
-- Bloquear el cliente de forma guiada cuando la API exige actualización de versión (`CLIENT_UPDATE_REQUIRED`).
-- Distribuir builds verificables de la extensión mediante GitHub Releases.
+- Configuración de la extensión mediante API Base URL HTTPS y API key.
+- Validación de conexión contra una API privada.
+- Extracción de audiencias desde cuentas objetivo.
+- Análisis de perfiles con distintos niveles de profundidad.
+- Selección de destinatarios y deduplicación de contactos.
+- Configuración de mensajes manuales o asistidos por IA.
+- Encolado de campañas desde la extensión instalada.
+- Seguimiento de jobs, progreso, errores, límites y resultados.
 
 El enfoque de producto fue mantener una interfaz simple para el usuario, pero con una arquitectura suficientemente robusta para controlar estado, límites, versionado y comunicación con backend.
 
@@ -277,17 +272,7 @@ En Docker, la topología queda dividida en:
 - `redis`: estado crítico y rate limiting.
 - `db-migrate`: migraciones.
 
-Endpoints principales:
-
-- `GET /health`, `GET /ready`, `GET /live`.
-- `POST /api/auth/login`, `POST /api/auth/token/refresh`, `POST /api/auth/logout`.
-- `POST /ext/v2/followings/enqueue`.
-- `POST /ext/v2/analyze/enqueue`.
-- `POST /ext/v2/send/enqueue`.
-- `GET /ext/v2/jobs`, `GET /ext/v2/results`, `GET /ext/v2/recipient-sources`.
-- `GET /ext/v2/recipient-sources/{source_id}/recipients`.
-- `POST /api/send/pull`, `POST /api/send/result`, `POST /api/send/heartbeat`.
-- `GET /metrics` y `GET /metrics/summary` protegidos en producción.
+El backend expone endpoints para autenticación, configuración, límites, encolado de jobs, consulta de resultados, selección de destinatarios, pull de tareas, reporte de envíos, heartbeat, métricas y health checks.
 
 El backend fue pensado como un sistema multi-tenant con JWT, API key, rate limiting y colas con afinidad dura por cuenta o `profile_id`. Esa afinidad evita mezclar trabajos entre cuentas y permite distribuir carga de forma controlada.
 
@@ -295,22 +280,9 @@ La base MySQL funciona como fuente de verdad operacional. Ahí viven clientes, p
 
 ## Colas y ejecución
 
-Las tareas de scraping, análisis y envío se encolan desde endpoints externos. El dispatcher consume esas colas y ejecuta trabajo con workers asociados a cuentas. El transporte de colas puede ser local o SQS, según configuración.
+Las tareas de extracción, análisis y envío se encolan desde endpoints protegidos. El backend valida API key/JWT, cuenta autorizada, payload, cuotas e idempotencia; luego registra jobs y tasks en MySQL.
 
-Este diseño permite separar la recepción de requests de la ejecución real. También facilita aplicar límites, reintentos, observabilidad y control de estado sin bloquear el proceso HTTP.
-
-El runtime asincrónico no es un consumer simple. El dispatcher escanea jobs pendientes, asegura tasks, enruta por cuenta, controla inflight, aplica cooldowns, reclama leases expirados, reinicia workers caídos, reconcilia cuotas y reconstruye proyecciones para que la extensión pueda leer resultados ya normalizados.
-
-Flujo operativo resumido:
-
-- La extensión llama un endpoint protegido y crea un job.
-- El backend valida API key/JWT, cuenta autorizada, payload, cuotas e idempotencia.
-- MySQL registra el job y sus tasks.
-- El dispatcher toma jobs pendientes y los enruta por cuenta.
-- Los workers con Selenium/Chrome ejecutan extracción o análisis cuando corresponde.
-- Para `send_message`, el backend deja tareas listas y la extensión las toma con `pull` o WebSocket.
-- La extensión reporta heartbeat y resultado de cada envío.
-- El backend actualiza estado, cuotas, deduplicación y proyecciones.
+Un dispatcher separado toma trabajos pendientes, los enruta por cuenta, controla concurrencia, aplica cooldowns, reclama leases expirados, reinicia workers caídos y actualiza proyecciones de resultados. Esta separación evita bloquear requests HTTP y permite aplicar límites, retries, observabilidad y control de estado.
 
 ## Extensión Chrome MV3
 
@@ -389,6 +361,6 @@ La extensión se limita a publicar el cliente operativo. El backend privado conc
 
 ## Resultado
 
-BeLeadAI combina producto, automatización y arquitectura backend. La parte visible parece una extensión simple, pero por debajo hay un sistema de jobs, contratos, versionado, distribución, límites y observabilidad.
+BeLeadAI terminó siendo más que una extensión: es una plataforma de automatización comercial con backend privado, cliente distribuible, jobs asíncronos, límites, contratos de API, versionado, observabilidad y control operativo.
 
-El principal aprendizaje técnico fue diseñar una frontera clara entre un cliente distribuible y un backend privado: la extensión necesita ser fácil de instalar y actualizar, mientras que el backend debe controlar seguridad, estado, límites y ejecución de tareas sensibles.
+El mayor aprendizaje fue diseñar una frontera clara entre cliente y backend. La extensión debía ser simple de instalar y operar; el backend debía concentrar seguridad, cuotas, estado, ejecución de tareas sensibles y reglas de negocio.
