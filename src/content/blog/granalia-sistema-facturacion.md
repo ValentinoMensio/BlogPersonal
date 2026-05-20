@@ -140,19 +140,6 @@ Ante errores técnicos o timeouts, el sistema consulta el último comprobante au
 
 También se auditan requests y responses en una tabla dedicada, pero con payloads sanitizados para no persistir secretos como token/sign ni claves privadas.
 
-## Emisión combinada
-
-Granalia necesitaba resolver pedidos que se separan entre gestión comercial y emisión fiscal legal. Para eso implementé un modo de emisión combinada: el usuario carga un único pedido, define qué porcentaje se emite como factura fiscal y el backend genera documentos vinculados por lote.
-
-La regla central es:
-
-```text
-cantidad_fiscal = ceil(cantidad_total * porcentaje_fiscal / 100)
-cantidad_remito = cantidad_total - cantidad_fiscal
-```
-
-El redondeo favorece la parte fiscal. La factura fiscal usa la lista y el IVA configurado por producto; el remito de gestión puede conservar reglas comerciales propias como bonificaciones.
-
 ## Datos e integridad
 
 La base usa PostgreSQL 16 con claves foráneas, constraints, índices únicos y JSONB para estructuras flexibles como descuentos, notas, reglas comerciales y snapshots.
