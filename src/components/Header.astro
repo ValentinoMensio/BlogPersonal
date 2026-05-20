@@ -1,5 +1,5 @@
 ---
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE, SITE_URL } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 import ParticleNetworkBackground from './ParticleNetworkBackground.astro';
 ---
@@ -7,12 +7,12 @@ import ParticleNetworkBackground from './ParticleNetworkBackground.astro';
 <ParticleNetworkBackground />
 <header class="site-header">
 	<nav>
-		<a href="/" class="brand"><span class="brand-slash">/</span>{SITE_TITLE}</a>
+		<a href={SITE_URL} class="brand"><span class="brand-slash">/</span>{SITE_TITLE}</a>
 		<div class="internal-links">
-			<HeaderLink href="/">Inicio</HeaderLink>
-			<HeaderLink href="/projects">Proyectos</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/about">Sobre mí</HeaderLink>
+			<HeaderLink href={SITE_URL}>Inicio</HeaderLink>
+			<HeaderLink href={`${SITE_URL}/projects/`}>Proyectos</HeaderLink>
+			<HeaderLink href={`${SITE_URL}/blog/`}>Blog</HeaderLink>
+			<HeaderLink href={`${SITE_URL}/about/`}>Sobre mí</HeaderLink>
 		</div>
 	</nav>
 </header>

@@ -2,7 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE } from '../consts';
+import { SITE_TITLE, SITE_URL } from '../consts';
 
 const projects = [
 	{
@@ -17,7 +17,7 @@ const projects = [
 			'Preparé el sistema para operar en producción con Docker, Caddy y PostgreSQL.',
 		],
 		stack: ['FastAPI', 'React', 'PostgreSQL', 'ARCA', 'Docker', 'Caddy'],
-		blogUrl: '/blog/granalia-sistema-facturacion/',
+		blogUrl: `${SITE_URL}/blog/granalia-sistema-facturacion/`,
 	},
 	{
 		name: 'BeLeadAI',
@@ -31,7 +31,7 @@ const projects = [
 			'Preparé el proceso de distribución de versiones mediante GitHub Releases.',
 		],
 		stack: ['FastAPI', 'MySQL', 'Redis', 'Chrome MV3', 'WebSockets', 'GitHub Releases'],
-		blogUrl: '/blog/beleadai-automatizacion-prospeccion/',
+		blogUrl: `${SITE_URL}/blog/beleadai-automatizacion-prospeccion/`,
 	},
 	{
 		name: 'El Switcher',
@@ -45,7 +45,7 @@ const projects = [
 			'El proyecto alcanzó alta cobertura de pruebas y entregas iterativas durante tres sprints.',
 		],
 		stack: ['FastAPI', 'WebSockets', 'React', 'Pytest', 'Vitest', 'Scrum', 'Jira'],
-		blogUrl: '/blog/el-switcher-backend-scrum/',
+		blogUrl: `${SITE_URL}/blog/el-switcher-backend-scrum/`,
 	},
 ];
 ---

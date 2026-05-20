@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import ProfileImage from '../assets/profile.jpeg';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
@@ -9,6 +11,7 @@ import {
 	LINKEDIN_URL,
 	SITE_DESCRIPTION,
 	SITE_TITLE,
+	SITE_URL,
 } from '../consts';
 
 const projects = [
@@ -47,14 +50,23 @@ const projects = [
 			<main>
 				<section class="hero">
 					<p class="eyebrow">Full-Stack Developer & Product Builder</p>
-					<h1>Valentino<br />Mensio</h1>
+					<div class="hero-identity">
+						<Image
+							src={ProfileImage}
+							alt="Valentino Mensio"
+							width={148}
+							height={148}
+							class="profile-photo"
+						/>
+						<h1>Valentino<br />Mensio</h1>
+					</div>
 					<p class="lead">
 						Construyo sistemas web completos para automatizar procesos y convertir ideas en productos
 						funcionales. Trabajo de punta a punta: backend, frontend, bases de datos, integraciones,
 						automatizaciones y despliegue.
 					</p>
 					<div class="actions">
-						<a class="btn primary" href="/projects">Ver proyectos</a>
+						<a class="btn primary" href={`${SITE_URL}/projects/`}>Ver proyectos</a>
 						<a class="btn" href={`mailto:${CONTACT_EMAIL}`}>Contactarme</a>
 					</div>
 					<p class="stack-line">
@@ -136,11 +148,29 @@ const projects = [
 		padding: 5rem 0 2.5rem;
 	}
 
+	.hero-identity {
+		align-items: center;
+		display: flex;
+		gap: 1.5rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.profile-photo {
+		aspect-ratio: 1;
+		border: 2px solid rgba(148, 163, 184, 0.28);
+		border-radius: 50%;
+		box-shadow: 0 0 0 8px rgba(99, 102, 241, 0.08), var(--shadow-card);
+		flex: 0 0 auto;
+		height: clamp(88px, 12vw, 148px);
+		object-fit: cover;
+		width: clamp(88px, 12vw, 148px);
+	}
+
 	.hero h1 {
 		font-size: clamp(3.2rem, 9vw, 6rem);
 		letter-spacing: -0.05em;
 		line-height: 1;
-		margin-bottom: 1.25rem;
+		margin-bottom: 0;
 	}
 
 	.hero .lead {

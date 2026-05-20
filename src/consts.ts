@@ -1,4 +1,5 @@
 export const SITE_TITLE = 'Valentino Mensio';
+export const SITE_URL = 'https://valentinomensio.com';
 export const SITE_DESCRIPTION =
 	'Desarrollador full-stack y product builder especializado en herramientas web, automatización y scraping.';
 
