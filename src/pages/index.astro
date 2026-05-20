@@ -142,7 +142,12 @@ const contributionMonths = [
 							<span>2026</span>
 						</div>
 						<div class="contribution-months" aria-hidden="true">
-							{contributionMonths.map((month) => <span style={`grid-column: ${month.start + 1}`}>{month.name}</span>)}
+							{
+								contributionWeeks.map((_, index) => {
+									const month = contributionMonths.find((item) => item.start === index);
+									return <span>{month?.name || ''}</span>;
+								})
+							}
 						</div>
 						<div class="contribution-grid" aria-hidden="true">
 							{
@@ -316,8 +321,8 @@ const contributionMonths = [
 	}
 
 	.contribution-months {
-		display: grid;
-		grid-template-columns: repeat(53, 10px);
+		display: flex;
+		gap: 3px;
 		justify-content: space-between;
 		margin-bottom: 0.35rem;
 		min-width: 720px;
@@ -328,6 +333,9 @@ const contributionMonths = [
 		font-family: var(--font-mono);
 		font-size: 0.64rem;
 		line-height: 1;
+		min-width: 10px;
+		position: relative;
+		white-space: nowrap;
 	}
 
 	.contribution-week {
