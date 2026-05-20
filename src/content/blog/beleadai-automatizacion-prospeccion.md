@@ -387,6 +387,38 @@ El backend depende de configuración por entorno para base de datos, secretos, R
 
 La extensión se limita a publicar el cliente operativo. El backend privado concentra validación, autorización, límites y política de ejecución. También existe documentación operativa para despliegue, comandos, logs, backups y restauración.
 
+## Despliegue productivo
+
+El despliegue de BeLeadAI está preparado para Ubuntu Server o un servidor propio usando Docker Compose. A diferencia de una API simple, el runtime productivo no es un único proceso: separa API, base de datos, Redis, migraciones, dispatchers y túnel de exposición.
+
+Topología productiva:
+
+- `app`: API FastAPI servida con Gunicorn/Uvicorn.
+- `db`: MySQL 8.4 con volumen persistente.
+- `redis`: estado crítico, rate limiting y coordinación operativa.
+- `db-migrate`: migraciones Alembic bloqueantes antes de iniciar servicios principales.
+- `dispatcher-scheduler`: ejecución de trabajos por cuenta.
+- `dispatcher-maintenance`: tareas de mantenimiento y recuperación.
+- `dispatcher-projections`: reconstrucción de proyecciones para resultados y destinatarios.
+- `cloudflared`: túnel saliente hacia Cloudflare para publicar la API.
+
+La API y MySQL pueden quedar ligados a `127.0.0.1`, mientras Redis y métricas internas viven dentro de la red Docker. Cloudflared es el único componente encargado de conectar el servidor con el exterior, mediante una conexión saliente autenticada. Esto evita abrir puertos web públicos en el host y reduce la superficie expuesta.
+
+Este diseño fue importante para una extensión Chrome MV3: la extensión exige una `API Base URL` HTTPS, pero el backend no necesita escuchar directamente en Internet. Cloudflare termina TLS, entrega HTTPS al cliente y enruta hacia el origen interno por túnel.
+
+Medidas operativas del despliegue:
+
+- Sin publicación directa de MySQL ni Redis a Internet.
+- API publicada por túnel, no por puerto abierto en el firewall.
+- Servicios internos comunicados por red Docker.
+- Migraciones ejecutadas antes de levantar API y dispatchers.
+- Límites de CPU/memoria por contenedor para evitar que Chrome/Selenium agote el host.
+- Volúmenes separados para datos, perfiles de navegador, logs y capturas de depuración.
+- Métricas protegidas y pensadas para monitoreo interno.
+- Validación de headers de proxy confiando en Cloudflare cuando corresponde.
+
+El beneficio principal es separar exposición pública de ejecución interna. Cloudflare maneja HTTPS y entrada pública; el servidor mantiene base de datos, Redis, workers y perfiles de navegador aislados. Para un producto con scraping, sesiones y envío asistido por extensión, esa frontera reduce riesgos y facilita operar sin dejar servicios sensibles accesibles desde Internet.
+
 ## Resultado
 
 BeLeadAI combina producto, automatización y arquitectura backend. La parte visible parece una extensión simple, pero por debajo hay un sistema de jobs, contratos, versionado, distribución, límites y observabilidad.
