@@ -53,11 +53,29 @@
 				this.vy = Math.sin(angle) * speed;
 			}
 
+			keepInBounds() {
+				const r = CONFIG.particleRadius;
+				if (this.x < r) {
+					this.x = r;
+					this.vx = Math.abs(this.vx);
+				} else if (this.x > W - r) {
+					this.x = W - r;
+					this.vx = -Math.abs(this.vx);
+				}
+
+				if (this.y < r) {
+					this.y = r;
+					this.vy = Math.abs(this.vy);
+				} else if (this.y > H - r) {
+					this.y = H - r;
+					this.vy = -Math.abs(this.vy);
+				}
+			}
+
 			update() {
-				if (this.x < 0 || this.x > W) this.vx *= -1;
-				if (this.y < 0 || this.y > H) this.vy *= -1;
-				this.x = Math.max(0, Math.min(W, this.x + this.vx));
-				this.y = Math.max(0, Math.min(H, this.y + this.vy));
+				this.x += this.vx;
+				this.y += this.vy;
+				this.keepInBounds();
 
 				if (!isMobile()) {
 					const dx = this.x - mouse.x;
@@ -68,6 +86,7 @@
 						const force = (CONFIG.mouseDist - dist) / CONFIG.mouseDist;
 						this.x += (dx / dist) * force * CONFIG.mousePush * 60;
 						this.y += (dy / dist) * force * CONFIG.mousePush * 60;
+						this.keepInBounds();
 					}
 				}
 			}
@@ -99,6 +118,7 @@
 			while (particles.length < count) particles.push(new Particle());
 			if (particles.length > count) particles.length = count;
 			if (isMobile() && particles.length > 50) particles.length = 50;
+			for (const particle of particles) particle.keepInBounds();
 		}
 
 		function draw() {

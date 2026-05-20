@@ -128,17 +128,17 @@ Aprendizajes técnicos concretos:
 
 - Separar scraping en un puerto de dominio (`BrowserPort`) permitió cambiar o endurecer el adaptador Selenium sin contaminar casos de uso.
 - Conviene tratar cada extracción como una operación incierta: un perfil puede no cargar, estar privado, no tener reels, mostrar métricas incompletas o cambiar el markup.
-- Para followings, el sistema navega al perfil, abre el modal, scrollea de forma incremental, deduplica usernames y corta por límite, falta de crecimiento o estabilidad del final.
+- Para followings, el sistema navega al perfil, abre el modal, hace scroll de forma incremental, deduplica nombres de usuario y corta por límite, falta de crecimiento o estabilidad del final.
 - Para análisis profundo, el sistema navega a reels, extrae métricas por pieza y calcula promedios solo con datos disponibles.
 - Los errores de navegador necesitan clasificación: navegación, DOM, autenticación, rate limit, conexión y errores inesperados no se tratan igual.
-- Las capturas de debug y logs por fase son claves para entender fallos que no se pueden reproducir solo con stack traces.
+- Las capturas de depuración y los logs por fase son claves para entender fallos que no se pueden reproducir solo con trazas de error.
 - La afinidad por cuenta evita mezclar sesiones de Instagram entre trabajos y reduce errores difíciles de rastrear.
 - El reciclado de drivers y los límites de concurrencia importan tanto como el código de scraping: Chrome consume memoria, puede quedar en estado inválido y necesita supervisión.
 - El sistema debe aceptar resultados parciales. Un análisis básico útil es mejor que fallar todo porque no se pudieron leer reels.
 
 ### Selenium y comportamiento de usuario
 
-Selenium fue útil porque permite operar sobre Instagram como lo haría una persona: abrir perfiles, entrar a secciones, esperar renderizados, scrollear modales, leer elementos visibles y mantener una sesión de navegador. Pero usar Selenium de forma ingenua no alcanza.
+Selenium fue útil porque permite operar sobre Instagram como lo haría una persona: abrir perfiles, entrar a secciones, esperar renderizados, hacer scroll en modales, leer elementos visibles y mantener una sesión de navegador. Pero usar Selenium de forma ingenua no alcanza.
 
 Los problemas reales aparecen en los bordes:
 
@@ -149,7 +149,7 @@ Los problemas reales aparecen en los bordes:
 - El navegador puede quedar en una pantalla intermedia, login wall, challenge o error silencioso.
 - Los tiempos fijos son frágiles: conviene combinar esperas explícitas, detección de estado y cortes por estabilidad.
 
-La estrategia terminó siendo defensiva: navegar, validar que el perfil cargó, distinguir privado/inexistente, abrir el modal correcto, scrollear por ciclos, recolectar usernames, normalizar, deduplicar y cortar cuando se alcanza el límite o cuando el contenido deja de crecer.
+La estrategia terminó siendo defensiva: navegar, validar que el perfil cargó, distinguir privado/inexistente, abrir el modal correcto, hacer scroll por ciclos, recolectar nombres de usuario, normalizar, deduplicar y cortar cuando se alcanza el límite o cuando el contenido deja de crecer.
 
 ### Por qué Selenium y no solo scrapers HTTP
 
@@ -189,7 +189,7 @@ Cuando un cambio rompía la extracción, el flujo de depuración era:
 - Revisar si el dato seguía renderizado o pasó a llegar por otra vía.
 - Mirar Network para entender qué request alimentaba la pantalla.
 - Ajustar selectores o estrategia de extracción.
-- Agregar logs por fase y, cuando era necesario, screenshot de debug.
+- Agregar logs por fase y, cuando era necesario, capturas de depuración.
 
 Esto cambió mi forma de ver el scraping: el selector es la última milla, no la solución completa. La solución real es tener una estrategia de observación y recuperación cuando la página cambia.
 
@@ -332,7 +332,7 @@ La extensión exige API sobre HTTPS. Esto evita configurar por error un backend 
 
 ## Contratos públicos
 
-Para reducir acoplamiento entre extensión y backend, el repositorio publica contratos frontend-visibles. Estos contratos documentan los request/response mínimos que la extensión necesita consumir.
+Para reducir acoplamiento entre extensión y backend, el repositorio publica contratos visibles para frontend. Estos contratos documentan las solicitudes y respuestas mínimas que la extensión necesita consumir.
 
 La cobertura publicada incluye:
 
@@ -351,7 +351,7 @@ La cobertura publicada incluye:
 - Send WebSocket events.
 - Jobs WebSocket events.
 
-Las respuestas siguen envelopes estables:
+Las respuestas siguen envoltorios estables:
 
 ```json
 { "data": { } }
@@ -371,7 +371,7 @@ La extensión se prepara para distribuir por GitHub Releases. Cada release publi
 - `extension-vX.Y.Z.sha256`.
 - `RELEASE_NOTES.md`.
 
-El flujo de mantenimiento incluye lint, format check, tests con `node --test`, validación de contratos, smoke de contratos y empaquetado de release.
+El flujo de mantenimiento incluye lint, verificación de formato, tests con `node --test`, validación de contratos, smoke tests de contratos y empaquetado de release.
 
 Scripts relevantes:
 
@@ -385,7 +385,7 @@ Scripts relevantes:
 
 El backend depende de configuración por entorno para base de datos, secretos, Redis, CORS, HTTPS, concurrencia, transporte de colas y métricas. En producción, las métricas se protegen con bearer token y Redis es requerido para estados críticos.
 
-La extensión se limita a publicar el cliente operativo. El backend privado concentra validación, autorización, límites y política de ejecución. También existe documentación operativa para despliegue, comandos, logs, backups y restore.
+La extensión se limita a publicar el cliente operativo. El backend privado concentra validación, autorización, límites y política de ejecución. También existe documentación operativa para despliegue, comandos, logs, backups y restauración.
 
 ## Resultado
 
