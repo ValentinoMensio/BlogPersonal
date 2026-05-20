@@ -113,7 +113,16 @@ Cuando no hay frecuencia disponible, el score redistribuye el peso entre engagem
 
 ## Aprendizajes de scraping
 
-El scraping de Instagram fue la parte más inestable del producto. La dificultad principal no fue “leer HTML”, sino diseñar una automatización que sobreviva a cambios de DOM, timeouts, sesiones, perfiles privados, modales con scroll interno y datos parcialmente disponibles.
+El scraping de Instagram fue la parte más inestable del producto. La dificultad principal no fue “leer HTML”, sino diseñar una automatización que sobreviva a cambios de DOM, timeouts, sesiones, perfiles privados, modales con scroll interno, datos parcialmente disponibles, heurísticas anti-bot y diferencias entre cuentas.
+
+El trabajo combinó varias capas de investigación:
+
+- Automatización visible con Selenium para navegar como usuario real.
+- Lectura del DOM cuando la información estaba renderizada de forma confiable.
+- Observación de Network en DevTools para entender qué requests alimentaban ciertas vistas.
+- Ingeniería inversa exploratoria de payloads y respuestas para validar si un dato venía del HTML, del estado interno de la app o de una llamada posterior.
+- Comparación entre perfiles públicos, privados, inexistentes, con pocos datos y con mucho contenido.
+- Ajustes iterativos cuando Instagram cambiaba estructura de nodos, atributos, modales o timings.
 
 Aprendizajes técnicos concretos:
 
@@ -127,7 +136,116 @@ Aprendizajes técnicos concretos:
 - El reciclado de drivers y los límites de concurrencia importan tanto como el código de scraping: Chrome consume memoria, puede quedar en estado inválido y necesita supervisión.
 - El sistema debe aceptar resultados parciales. Un análisis básico útil es mejor que fallar todo porque no se pudieron leer reels.
 
-La conclusión práctica fue que el scraping productivo necesita arquitectura alrededor: colas, retries, backoff, límites, observabilidad, persistencia y capacidad de degradar. Sin eso, cualquier selector funcionando hoy se vuelve una deuda mañana.
+### Selenium y comportamiento de usuario
+
+Selenium fue útil porque permite operar sobre Instagram como lo haría una persona: abrir perfiles, entrar a secciones, esperar renderizados, scrollear modales, leer elementos visibles y mantener una sesión de navegador. Pero usar Selenium de forma ingenua no alcanza.
+
+Los problemas reales aparecen en los bordes:
+
+- El DOM puede existir antes de que los datos estén completos.
+- Un selector puede funcionar para una cuenta y fallar en otra por idioma, layout, experimentos A/B o estado de sesión.
+- Los modales de followings tienen scroll interno y carga incremental; no basta con leer una lista inicial.
+- Algunos elementos se reciclan virtualmente, por lo que hay que deduplicar usernames y detectar falta de crecimiento.
+- El navegador puede quedar en una pantalla intermedia, login wall, challenge o error silencioso.
+- Los tiempos fijos son frágiles: conviene combinar esperas explícitas, detección de estado y cortes por estabilidad.
+
+La estrategia terminó siendo defensiva: navegar, validar que el perfil cargó, distinguir privado/inexistente, abrir el modal correcto, scrollear por ciclos, recolectar usernames, normalizar, deduplicar y cortar cuando se alcanza el límite o cuando el contenido deja de crecer.
+
+### Por qué Selenium y no solo scrapers HTTP
+
+Evalué el problema como una aplicación web dinámica, no como una página estática. Instagram no entrega una vista simple donde todo el dato esté en HTML inicial: muchas partes dependen de JavaScript, estado de sesión, navegación cliente, lazy loading, modales, scroll incremental y respuestas asincrónicas. Por eso un scraper basado solo en `requests` o parsing HTML queda corto rápidamente.
+
+Selenium permitió trabajar con el navegador real como runtime:
+
+- Ejecuta el JavaScript de la aplicación.
+- Conserva cookies y estado de sesión de forma similar a un usuario.
+- Permite observar estados intermedios de UI, no solo respuestas finales.
+- Hace posible interactuar con modales, botones, rutas internas y scrolls virtualizados.
+- Permite depurar visualmente con screenshots y DevTools cuando algo cambia.
+
+También investigué herramientas del ecosistema como `undetected-chromedriver` y técnicas conocidas como `selenium-stealth`. El aprendizaje importante no fue “usar una librería mágica”, sino entender por qué existen: muchas plataformas comparan señales del navegador para diferenciar tráfico automatizado de tráfico humano.
+
+Algunas de esas señales se suelen agrupar bajo el concepto de fingerprinting:
+
+- Propiedades del navegador y del runtime JavaScript.
+- Diferencias entre Chrome real, Chrome automatizado y navegadores headless.
+- Señales de WebDriver expuestas por el entorno.
+- Idioma, timezone, viewport, sistema operativo y fuentes disponibles.
+- Consistencia entre cookies, sesión, IP, historial y comportamiento.
+- Ritmo de navegación, repetición de acciones y patrones de scroll/click.
+
+Instagram, como otras plataformas grandes, aplica políticas de detección y control de abuso que no dependen de una sola señal. Puede haber límites por cuenta, por IP, por endpoint, por frecuencia, por sesión o por combinación de comportamiento. Por eso la solución no podía depender únicamente de “cambiar headers” o “rotar proxies”.
+
+La elección de Selenium tuvo sentido porque el objetivo era compatibilidad y observabilidad: ver lo que ve el usuario, entender cuándo la UI cambió y degradar el análisis si una parte no estaba disponible. Las herramientas stealth fueron útiles como referencia técnica para comprender diferencias entre navegación real y automatizada, pero el diseño del producto se apoyó más en límites, sesiones aisladas, backoff, jobs auditables y resultados parciales que en intentar esconder toda automatización.
+
+### Cambios del DOM
+
+Una parte importante del aprendizaje fue asumir que el DOM no es contrato. Instagram cambia nombres de clases, jerarquías, wrappers, textos y timing de renderizado. Por eso intenté evitar selectores demasiado acoplados a clases generadas y priorizar señales más estables: links de perfil, roles, estructura de modales y normalización de URLs.
+
+Cuando un cambio rompía la extracción, el flujo de depuración era:
+
+- Reproducir manualmente el caso en navegador.
+- Comparar el DOM nuevo contra el DOM esperado.
+- Revisar si el dato seguía renderizado o pasó a llegar por otra vía.
+- Mirar Network para entender qué request alimentaba la pantalla.
+- Ajustar selectores o estrategia de extracción.
+- Agregar logs por fase y, cuando era necesario, screenshot de debug.
+
+Esto cambió mi forma de ver el scraping: el selector es la última milla, no la solución completa. La solución real es tener una estrategia de observación y recuperación cuando la página cambia.
+
+### Network e ingeniería inversa
+
+Además del DOM, experimenté con la pestaña Network para entender cómo Instagram cargaba datos: qué llamadas se disparaban al abrir perfiles, followings, reels o acciones de navegación; qué payloads aparecían; qué información estaba disponible antes de renderizarse; y qué campos eran estables o efímeros.
+
+Ese trabajo sirvió para:
+
+- Confirmar si un dato visible venía de HTML renderizado o de una respuesta asincrónica.
+- Entender por qué ciertas vistas tardaban en poblarse aunque el DOM ya existiera.
+- Identificar diferencias entre datos públicos, datos dependientes de sesión y datos bloqueados.
+- Diseñar mejores esperas: no esperar “un tiempo”, sino esperar evidencia de que la vista cargó.
+- Validar límites de confiabilidad antes de convertir una observación en feature.
+
+La ingeniería inversa fue exploratoria y de aprendizaje: no convertí cada request observado en dependencia directa. En un producto mantenible, depender de endpoints internos no documentados puede ser incluso más frágil que depender del DOM. Lo valioso fue usar Network como herramienta de diagnóstico para entender el comportamiento de la aplicación y tomar mejores decisiones de scraping.
+
+La mayor diferencia práctica fue pasar de “buscar un selector que funcione” a “entender el flujo de datos completo”. Si una métrica aparecía tarde, podía ser por lazy loading, por un request posterior, por un estado cacheado, por un bloqueo de sesión o por una variante de UI. Mirar Network ayudó a distinguir esos casos antes de tocar código.
+
+### Bots, sesiones y señales anti-abuso
+
+Otro aprendizaje fue que el scraping no falla solo por errores técnicos. También falla por señales de comportamiento: demasiadas acciones, navegación repetitiva, cuentas sin historial, IPs compartidas, sesiones inestables o patrones poco humanos.
+
+Por eso el backend no trata el scraping como una función síncrona simple. Lo rodea con controles operativos:
+
+- Afinidad por cuenta para no mezclar sesiones ni ejecutar tareas de distintas cuentas en el mismo contexto.
+- Workers aislados por cuenta para reducir contaminación de estado.
+- Límites de concurrencia e inflight para no disparar demasiadas acciones simultáneas.
+- Backoff y retries para no insistir agresivamente ante errores temporales.
+- Cooldowns y token buckets para suavizar ritmo de ejecución.
+- Clasificación de errores retryable y no retryable.
+- Persistencia de estado para poder continuar, cancelar o auditar jobs.
+- Heartbeats para saber si un sender sigue vivo o quedó en un estado intermedio.
+- Idempotencia para no duplicar trabajos cuando una llamada se reintenta.
+
+La extensión también cumple un rol importante: el envío de mensajes se ejecuta desde el navegador del usuario, con su sesión real, y reporta heartbeat/resultados al backend. Eso evita convertir el backend en un sender centralizado opaco y permite separar extracción/análisis server-side del envío asistido por cliente.
+
+Esta arquitectura también hizo más fácil detectar problemas reales: API rate-limited, usuario sin sesión, cuenta incorrecta, ausencia de tareas, cooldown activo, error de navegación o fallo del content script. En vez de tener un “bot” que falla como caja negra, el sistema reporta etapas y resultados.
+
+### Proxies y aislamiento operativo
+
+También exploré el rol de proxies y aislamiento de navegación. En este tipo de sistemas, el proxy no es una “solución mágica”; es una pieza operativa que puede ayudar o empeorar la estabilidad según calidad, reputación, latencia y consistencia con la sesión.
+
+Los puntos importantes fueron:
+
+- Una cuenta debería mantener afinidad con su entorno de navegación: sesión, perfil de Chrome, cookies y red.
+- Cambiar IP o proxy sin criterio puede disparar verificaciones o invalidar supuestos de sesión.
+- El proxy necesita validación propia: conectividad, autenticación, latencia y ausencia de errores como `407`.
+- La observabilidad debe registrar host/estado sin filtrar credenciales.
+- El sistema necesita poder correr sin proxy en local y con configuración más estricta en producción.
+
+Por eso el diseño prioriza configuración por cuenta, separación de perfiles de navegador y validaciones operativas alrededor del driver. La parte difícil no es “usar un proxy”, sino mantener coherencia entre identidad, sesión, frecuencia de acciones y entorno de ejecución.
+
+En la práctica, el proxy se analiza como parte de una identidad operativa completa. Si la sesión, las cookies, la IP y el ritmo de acciones no son coherentes entre sí, el sistema se vuelve menos estable. Por eso preferí pensar en aislamiento y consistencia antes que en rotación agresiva.
+
+La conclusión práctica fue que el scraping productivo necesita arquitectura alrededor: colas, retries, backoff, límites, observabilidad, persistencia, sesiones aisladas y capacidad de degradar. Sin eso, cualquier selector funcionando hoy se vuelve una deuda mañana.
 
 ### Selección de destinatarios
 
