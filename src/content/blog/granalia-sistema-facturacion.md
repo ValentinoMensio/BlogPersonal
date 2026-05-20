@@ -180,23 +180,7 @@ El sistema implementa medidas de seguridad de aplicación y de operación:
 
 ## Infraestructura
 
-El despliegue productivo está pensado para correr sobre Ubuntu Server con Docker Compose. La aplicación queda dividida en contenedores: PostgreSQL, API FastAPI y Caddy como origen web interno.
-
-Caddy sirve el frontend estático y actúa como reverse proxy hacia FastAPI. El backend expone health checks de vida y disponibilidad, logging estructurado y tiempos de respuesta por request mediante `X-Response-Time-Ms`.
-
-La exposición pública no depende de abrir puertos del servidor a Internet. En producción, Caddy puede escuchar solamente en `127.0.0.1` y Cloudflared publica el sitio mediante un túnel saliente hacia Cloudflare. Esto cambia el modelo de seguridad: el servidor no necesita aceptar tráfico entrante en `80` o `443`; solo inicia una conexión saliente segura hacia Cloudflare, y Cloudflare entrega HTTPS al usuario final.
-
-Decisiones de despliegue:
-
-- Ubuntu Server como host base, con superficie mínima y servicios controlados.
-- Docker Compose para levantar frontend, backend, base de datos y reverse proxy de forma reproducible.
-- PostgreSQL publicado solo en localhost para administración por túnel SSH, no como servicio público.
-- Caddy como origen interno para servir archivos estáticos y enviar rutas de API hacia FastAPI.
-- Cloudflared como capa de exposición externa sin abrir puertos HTTP/HTTPS en el host.
-- Variables de entorno y secretos separados del código fuente.
-- Backups operativos de PostgreSQL y documentación de restauración.
-
-Este enfoque reduce superficie de ataque: la base de datos no queda expuesta, la API no se publica directamente y el firewall del servidor puede permanecer cerrado para tráfico web entrante. La capa pública queda concentrada en Cloudflare, mientras que el servidor conserva los servicios sensibles en red local o red Docker.
+El despliegue está preparado con Docker Compose, Caddy y PostgreSQL containerizado. Caddy sirve el frontend estático y actúa como reverse proxy hacia FastAPI. El backend expone health checks de vida y disponibilidad, logging estructurado y tiempos de respuesta por request mediante `X-Response-Time-Ms`.
 
 ## Resultado
 
