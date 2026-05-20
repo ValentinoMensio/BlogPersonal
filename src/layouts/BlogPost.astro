@@ -70,7 +70,8 @@ const { title, description, pubDate, updatedDate, heroImage, heroImageZoom, hero
 		<main>
 			<article>
 				<div class:list={['hero-image', heroImageZoom && 'hero-image--zoom', heroImageCompact && 'hero-image--compact']}>
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+					{heroImage && heroImageCompact && <Image src={heroImage} alt="" />}
+					{heroImage && !heroImageCompact && <Image width={1020} height={510} src={heroImage} alt="" />}
 				</div>
 				<div class="prose">
 					<div class="title">
