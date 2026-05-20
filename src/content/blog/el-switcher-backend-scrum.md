@@ -2,7 +2,7 @@
 title: 'El Switcher: backend, WebSockets, arquitectura y Scrum'
 description: 'Experiencia técnica desarrollando una plataforma web multijugador con FastAPI, WebSockets, React, testing, arquitectura hexagonal y liderazgo Scrum.'
 pubDate: 'May 11 2026'
-heroImage: '../../assets/blog-placeholder-3.jpg'
+heroImage: '../../assets/ElSwitcher/cover.png'
 ---
 
 El Switcher fue una plataforma web interactiva para jugar online a un juego de mesa. El proyecto se desarrolló durante Ingeniería de Software en FAMAF, en un contexto académico que simulaba un entorno profesional con cliente, sprints, entregas, testing, revisiones y roles Scrum.
@@ -21,6 +21,76 @@ Stack principal:
 - Frontend: React y JavaScript/TypeScript.
 - Testing: Pytest y Vitest.
 - Gestión: Jira y Scrum.
+
+## Casos de uso principales
+
+El producto cubría el ciclo completo para entrar al juego, coordinar una sala e iniciar una partida multijugador:
+
+- Registro de jugador con validaciones de nombre, longitud, caracteres permitidos y normalización de espacios.
+- Creación de salas con nombre, cantidad mínima y máxima de jugadores, host y contraseña opcional.
+- Listado de salas disponibles con estado en tiempo real: cantidad de jugadores, sala iniciada, sala privada y capacidad.
+- Selección de sala desde el lobby, con bloqueo de ingreso si la sala está llena o ya comenzó.
+- Ingreso a salas públicas o privadas, validando contraseña cuando corresponde.
+- Salida de sala antes de iniciar la partida.
+- Cierre de sala cuando el host abandona, notificando al resto de jugadores.
+- Lobby de sala con participantes conectados, botón de inicio visible para el host y actualizaciones por WebSocket.
+- Inicio de partida solo por el host y solo si se alcanza el mínimo de jugadores.
+- Creación automática del tablero de 36 fichas de colores ordenadas aleatoriamente.
+- Creación de cartas de movimiento y cartas de figura al iniciar la partida.
+- Reparto inicial de cartas: 3 cartas de movimiento y cartas de figura para cada jugador.
+- Creación del orden de turnos.
+- Sincronización de estado global de partida y estado privado de cada jugador por WebSocket.
+- Reconexión controlada: si un jugador abre una segunda conexión, se cierra la conexión anterior.
+- Paso de turno, incluyendo vuelta completa entre jugadores.
+- Abandono de partida en curso, con finalización si queda una cantidad insuficiente de jugadores.
+- Selección de cartas solo cuando corresponde al turno del jugador.
+- Juego de cartas de movimiento para intercambiar fichas del tablero.
+- Cancelación de movimientos parciales antes de confirmar una jugada.
+- Juego de cartas de figura cuando la forma seleccionada coincide con la carta.
+- Validación de figuras por forma, color, bordes del tablero, separación entre fichas y pertenencia al tablero.
+- Bloqueo de figuras de otros jugadores.
+- Manejo de color prohibido para evitar jugadas inválidas sobre figuras de ese color.
+- Rechazo explícito de acciones inválidas: jugador inexistente, partida inexistente, jugador fuera de partida, carta ajena, carta bloqueada o acción fuera de turno.
+
+## Capturas del producto
+
+Las capturas muestran el flujo principal desde el ingreso del jugador hasta la interacción con el tablero.
+
+### Registro de jugador
+
+![Pantalla de registro de jugador en El Switcher](../../assets/ElSwitcher/login.png)
+
+El primer paso es crear un jugador. La interfaz valida el nombre antes de habilitar el acceso al lobby, y el backend persiste el jugador para asociarlo luego a salas, partidas y conexiones WebSocket.
+
+### Lista de partidas
+
+![Lista de partidas disponibles en El Switcher](../../assets/ElSwitcher/party_list.png)
+
+El lobby muestra las salas disponibles y sus estados. Desde esta pantalla el jugador puede crear una sala, seleccionar una existente o ingresar a una sala privada si conoce la contraseña.
+
+### Lobby de sala
+
+![Lobby de sala en El Switcher](../../assets/ElSwitcher/game_lobby.png)
+
+Dentro de una sala, los jugadores ven la composición del grupo antes de empezar. El host puede iniciar la partida cuando se cumple el mínimo de jugadores; el resto recibe la actualización en tiempo real.
+
+### Tablero de juego
+
+![Tablero de El Switcher](../../assets/ElSwitcher/cover.png)
+
+Al iniciar, el backend crea el tablero de 36 fichas, reparte cartas y define el orden de turnos. La partida mantiene estado global para todos los jugadores y datos privados para cada mano.
+
+### Carta de movimiento
+
+![Intercambio de fichas en El Switcher](../../assets/ElSwitcher/GameBoard_swap.png)
+
+Las cartas de movimiento permiten seleccionar fichas e intercambiarlas. El sistema controla turno, carta seleccionada, posiciones válidas y posibilidad de cancelar movimientos parciales.
+
+### Carta de figura
+
+![Uso de carta de figura en El Switcher](../../assets/ElSwitcher/gameboard_usecard.png)
+
+Las cartas de figura requieren seleccionar un patrón válido sobre el tablero. El backend valida que la figura exista, que coincida con la carta, que no use el color prohibido y que la jugada corresponda al jugador en turno.
 
 ## Mi rol como Scrum Master
 
