@@ -3,6 +3,7 @@ title: 'El Switcher: backend, WebSockets, arquitectura y Scrum'
 description: 'Experiencia técnica desarrollando una plataforma web multijugador con FastAPI, WebSockets, React, testing, arquitectura hexagonal y liderazgo Scrum.'
 pubDate: 'May 11 2026'
 heroImage: '../../assets/ElSwitcher/cover.png'
+heroImageCompact: true
 ---
 
 El Switcher fue una plataforma web interactiva para jugar online a un juego de mesa. El proyecto se desarrolló durante Ingeniería de Software en FAMAF, en un contexto académico que simulaba un entorno profesional con cliente, sprints, entregas, testing, revisiones y roles Scrum.
