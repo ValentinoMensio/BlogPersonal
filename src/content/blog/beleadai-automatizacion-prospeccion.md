@@ -54,6 +54,81 @@ El panel de análisis muestra resultados generados desde audiencias objetivo. La
 
 El usuario puede ajustar el costo y la precisión del análisis. El modo básico prioriza velocidad; el modo profundo permite enriquecer la evaluación cuando se necesita más contexto o cuando el flujo apunta a rubros específicos.
 
+## Análisis profundo de perfiles
+
+El análisis profundo no se limita a leer nombre y biografía. El backend construye un snapshot del perfil y, cuando corresponde, navega a la sección de reels para extraer métricas recientes.
+
+Datos extraídos o derivados:
+
+- `username`: identificador normalizado del perfil.
+- `bio`: descripción pública del perfil.
+- `category_text`: categoría profesional visible cuando Instagram la expone.
+- `followers`: cantidad de seguidores.
+- `followings`: cantidad de cuentas seguidas.
+- `posts`: cantidad de publicaciones.
+- `privacy`: estado público, privado o desconocido.
+- `is_verified`: verificación del perfil cuando está disponible.
+- `rubro`: categoría de negocio detectada.
+- `avg_views_last_n`: promedio de views sobre los últimos reels analizados.
+- `avg_likes_last_n`: promedio de likes sobre los últimos reels analizados.
+- `avg_comments_last_n`: promedio de comentarios sobre los últimos reels analizados.
+- `reel_upload_frequency`: frecuencia estimada de publicación de reels.
+- `engagement_score`: calidad de interacción normalizada.
+- `success_score`: score agregado de potencial comercial.
+- `consistency_score`: en la implementación actual representa principalmente frecuencia contra benchmark.
+- `analysis_depth`: `basic` o `deep`, según si se pudo completar el análisis con métricas de reels.
+
+La detección de rubro sigue una estrategia de prioridad:
+
+- Primero intenta usar la categoría profesional de Instagram si hay una coincidencia normalizada contra categorías conocidas.
+- Si no hay categoría útil, analiza la biografía con keywords fuertes y débiles.
+- Las keywords fuertes pesan `2`, las débiles pesan `1`.
+- Un rubro califica si llega al score mínimo o si tiene al menos una coincidencia fuerte.
+- Si dos rubros empatan con la misma fuerza, se evita clasificar para no introducir falsos positivos.
+
+El cálculo de métricas profundas parte de los reels:
+
+```text
+avg_views = promedio(views de reels recientes)
+avg_likes = promedio(likes de reels recientes)
+avg_comments = promedio(comments de reels recientes)
+```
+
+El `engagement_score` mezcla dos señales:
+
+```text
+er_views = (avg_likes + 3 * avg_comments) / avg_views
+er_followers = (avg_likes + avg_comments) / followers
+```
+
+Los comentarios pesan más que los likes porque son una señal de interacción más costosa. Cada ratio se compara contra benchmarks y se transforma con una función logística para evitar scores lineales frágiles o valores pegados a `1.0`.
+
+El `success_score` combina:
+
+- `engagement_score`: peso `0.5`.
+- `views_score`: peso `0.3`, calculado desde `avg_views / followers` contra benchmark por tamaño de cuenta.
+- `frequency_score`: peso `0.2`, calculado desde la frecuencia de reels contra benchmark.
+
+Cuando no hay frecuencia disponible, el score redistribuye el peso entre engagement y views. Además, los scores se penalizan si la muestra de reels es chica: con menos reels analizados hay menos confianza estadística, entonces el resultado baja proporcionalmente hasta alcanzar el objetivo de muestra configurado.
+
+## Aprendizajes de scraping
+
+El scraping de Instagram fue la parte más inestable del producto. La dificultad principal no fue “leer HTML”, sino diseñar una automatización que sobreviva a cambios de DOM, timeouts, sesiones, perfiles privados, modales con scroll interno y datos parcialmente disponibles.
+
+Aprendizajes técnicos concretos:
+
+- Separar scraping en un puerto de dominio (`BrowserPort`) permitió cambiar o endurecer el adaptador Selenium sin contaminar casos de uso.
+- Conviene tratar cada extracción como una operación incierta: un perfil puede no cargar, estar privado, no tener reels, mostrar métricas incompletas o cambiar el markup.
+- Para followings, el sistema navega al perfil, abre el modal, scrollea de forma incremental, deduplica usernames y corta por límite, falta de crecimiento o estabilidad del final.
+- Para análisis profundo, el sistema navega a reels, extrae métricas por pieza y calcula promedios solo con datos disponibles.
+- Los errores de navegador necesitan clasificación: navegación, DOM, autenticación, rate limit, conexión y errores inesperados no se tratan igual.
+- Las capturas de debug y logs por fase son claves para entender fallos que no se pueden reproducir solo con stack traces.
+- La afinidad por cuenta evita mezclar sesiones de Instagram entre trabajos y reduce errores difíciles de rastrear.
+- El reciclado de drivers y los límites de concurrencia importan tanto como el código de scraping: Chrome consume memoria, puede quedar en estado inválido y necesita supervisión.
+- El sistema debe aceptar resultados parciales. Un análisis básico útil es mejor que fallar todo porque no se pudieron leer reels.
+
+La conclusión práctica fue que el scraping productivo necesita arquitectura alrededor: colas, retries, backoff, límites, observabilidad, persistencia y capacidad de degradar. Sin eso, cualquier selector funcionando hoy se vuelve una deuda mañana.
+
 ### Selección de destinatarios
 
 ![Panel de selección de destinatarios en BeLeadAI](../../assets/BeLead/recipient_selection_panel.png)
