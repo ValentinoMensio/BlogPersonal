@@ -14,6 +14,8 @@ import {
 	SITE_URL,
 } from '../consts';
 
+const CV_URL = '/CV-Valentino-Mensio.pdf';
+
 const projects = [
 	{
 		name: 'Granalia',
@@ -170,7 +172,8 @@ const contributionMonths = [
 					</section>
 					<div class="actions">
 						<a class="btn primary" href={`${SITE_URL}/projects/`}>Ver proyectos</a>
-						<a class="btn" href={`mailto:${CONTACT_EMAIL}`}>Contactarme</a>
+						<a class="btn" href={CV_URL} download>Descargar CV</a>
+						<a class="btn" href="#contacto">Contactarme</a>
 					</div>
 					<p class="stack-line">
 						<span>Python</span>
@@ -185,17 +188,19 @@ const contributionMonths = [
 
 				<section class="section split">
 					<div>
-						<p class="eyebrow">Perfil</p>
-						<h2>Full-stack developer enfocado en automatización, productos internos y software de gestión.</h2>
+						<p class="eyebrow">Perfil profesional</p>
+						<h2>Full-stack developer con foco en backend, arquitectura, automatización e integración de sistemas.</h2>
 					</div>
 					<p class="lead">
-						Soy Analista en Computación por FAMAF y continúo mi formación en Ciencias de la
-						Computación. Me especializo en construir herramientas web completas: desde entender el
-						problema y modelar los datos hasta desarrollar APIs, interfaces, integraciones,
-						automatizaciones y despliegues.
+						Analista en Computación por FAMAF y desarrollador full-stack con experiencia en
+						aplicaciones web, automatización e integración de sistemas. Desarrollo soluciones
+						end-to-end combinando frontend, backend, APIs, bases de datos, scraping y despliegues
+						con Docker.
 						<br /><br />
-						Mi foco es crear software claro para el usuario, sólido a nivel técnico y útil para resolver
-						problemas reales de negocio.
+						Me interesa construir sistemas mantenibles y orientados a usuarios, con especial foco en
+						backend, arquitectura, automatización e integración con APIs y servicios externos. Valoro
+						el trabajo en equipos colaborativos, donde pueda aportar con autonomía, criterio técnico y
+						compromiso en la construcción de soluciones útiles y bien diseñadas.
 					</p>
 				</section>
 
@@ -220,7 +225,7 @@ const contributionMonths = [
 					</div>
 				</section>
 
-				<section class="section contact-card">
+				<section class="section contact-card" id="contacto">
 					<div>
 						<p class="eyebrow">Contacto</p>
 						<h2>¿Tenés un proceso manual, una idea de producto o una herramienta interna para construir?</h2>

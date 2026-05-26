@@ -3,6 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } from '../consts';
+
+const CV_URL = '/CV-Valentino-Mensio.pdf';
 ---
 
 <!doctype html>
@@ -23,23 +25,27 @@ import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } fr
 					Construyo productos de punta a punta: interfaces, APIs, bases de datos, automatizaciones,
 					integraciones, scraping y despliegues con Docker.
 				</p>
+				<a class="btn" href={CV_URL} download>Descargar CV</a>
 			</section>
 
 			<section class="section resume-grid">
 				<article class="card wide">
 					<h2>Perfil profesional</h2>
 					<p>
-						Ayudo a convertir procesos manuales, ideas de negocio y operaciones internas en herramientas
-						web mantenibles, automatizadas y listas para usar.
+						Analista en Computación por FAMAF y desarrollador full-stack con experiencia en
+						aplicaciones web, automatización e integración de sistemas. Desarrollo soluciones
+						end-to-end combinando frontend, backend, APIs, bases de datos, scraping y despliegues
+						con Docker.
 					</p>
 					<p>
-						Actualmente desarrollo BeLeadAI, una plataforma de prospección automatizada para Instagram,
-						y Granalia, un sistema web de facturación y gestión operativa usado en fábrica.
+						Me interesa construir sistemas mantenibles y orientados a usuarios, con especial foco en
+						backend, arquitectura, automatización e integración con APIs y servicios externos.
 					</p>
 					<p>
-						Me interesan los productos completos, los sistemas escalables, la automatización con IA y
-						las herramientas que conectan necesidades reales con software mantenible.
+						Valoro el trabajo en equipos colaborativos, donde pueda aportar con autonomía, criterio
+						técnico y compromiso en la construcción de soluciones útiles y bien diseñadas.
 					</p>
+					<a class="btn inline-cv" href={CV_URL} download>Descargar CV en PDF</a>
 				</article>
 
 				<article class="card">
@@ -105,6 +111,28 @@ import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } fr
 	.card p,
 	.skills-list {
 		color: var(--text-secondary);
+	}
+	.btn {
+		align-items: center;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		color: var(--text-secondary);
+		display: inline-flex;
+		font-family: var(--font-sans);
+		font-size: 0.9rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		padding: 0.6rem 1.2rem;
+		text-decoration: none;
+		transition: border-color 0.15s, color 0.15s, background 0.15s;
+	}
+	.btn:hover {
+		background: rgba(255, 255, 255, 0.04);
+		border-color: var(--border-hover);
+		color: var(--text-primary);
+	}
+	.inline-cv {
+		margin-top: 0.5rem;
 	}
 	.skills-list {
 		padding-left: 1.25rem;
