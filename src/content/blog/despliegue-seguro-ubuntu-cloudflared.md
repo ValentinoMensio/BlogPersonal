@@ -1,11 +1,11 @@
 ---
 title: 'Despliegue seguro con Ubuntu Server, Docker y Cloudflared'
-description: 'Cómo desplegué proyectos web en un servidor propio usando Ubuntu Server, Docker Compose, Caddy y Cloudflared, evitando exponer puertos y servicios internos.'
+description: 'Cómo desplegué proyectos web en un servidor propio usando Ubuntu Server, Docker Compose, Caddy, Nginx y Cloudflared, evitando exponer puertos y servicios internos.'
 pubDate: 'May 14 2026'
 heroImage: '../../assets/blog-placeholder-4.jpg'
 ---
 
-En los proyectos Granalia y BeLeadAI usé una estrategia de despliegue pensada para reducir superficie de ataque: ejecutar los servicios en Ubuntu Server con Docker Compose y publicar la aplicación mediante Cloudflared, sin abrir directamente los puertos web del servidor a Internet.
+En los proyectos Granalia, BeLeadAI y este blog usé una estrategia de despliegue pensada para reducir superficie de ataque: ejecutar los servicios en Ubuntu Server y publicar la aplicación mediante Cloudflared, sin abrir directamente los puertos web del servidor a Internet.
 
 La idea central fue separar dos responsabilidades:
 
@@ -23,8 +23,8 @@ Para estos proyectos preferí otro enfoque: que el servidor no acepte conexiones
 La arquitectura queda dividida así:
 
 - Ubuntu Server como host base.
-- Docker Compose para levantar servicios de forma reproducible.
-- Caddy como origen interno y reverse proxy local cuando el proyecto lo necesita.
+- Docker Compose para levantar servicios de forma reproducible cuando la aplicación tiene varias piezas.
+- Caddy o Nginx como origen interno, según el tipo de proyecto.
 - FastAPI como API backend.
 - PostgreSQL o MySQL como base de datos, sin exposición pública.
 - Redis para estado operativo, colas o rate limiting cuando corresponde.
@@ -33,7 +33,8 @@ La arquitectura queda dividida así:
 El punto importante es que los servicios sensibles no se publican en `0.0.0.0`. Cuando un puerto necesita existir en el host, se liga a `127.0.0.1`, por ejemplo:
 
 ```text
-127.0.0.1:8088 -> Caddy / Web interno
+127.0.0.1:8088 -> Caddy / Web interno de Granalia
+127.0.0.1:8080 -> Nginx / Blog estático
 127.0.0.1:8000 -> API interna
 127.0.0.1:5433 -> PostgreSQL para administración local o túnel SSH
 ```
@@ -52,19 +53,52 @@ Usuario -> HTTPS -> Cloudflare -> Cloudflared tunnel -> 127.0.0.1:8088
 
 La ventaja es que el firewall del servidor puede permanecer cerrado para tráfico web entrante. No hace falta publicar `80`, `443`, la base de datos ni Redis. Cloudflare se convierte en la frontera pública y el servidor queda como origen privado.
 
+En el servidor, el túnel queda definido como servicio de sistema y las reglas de ingreso apuntan a orígenes locales. En lugar de crear un túnel por proyecto, uso un único túnel con varias reglas `ingress`:
+
+```text
+granalia.com.ar -> http://localhost:8088
+www.granalia.com.ar -> http://localhost:8088
+valentinomensio.com -> http://127.0.0.1:8080
+www.valentinomensio.com -> http://127.0.0.1:8080
+```
+
+El detalle importante es que los dominios públicos no apuntan a puertos abiertos del host, sino a servicios locales alcanzables únicamente desde el propio servidor. Separar túneles también sería válido, pero en este caso un único túnel simplifica la operación porque ambos proyectos están en el mismo servidor y bajo la misma administración.
+
 ## Granalia
 
 Granalia usa Docker Compose con PostgreSQL, FastAPI y Caddy. Caddy sirve el frontend estático y enruta las rutas de API hacia FastAPI.
 
-En este caso, Caddy puede escuchar solo en localhost y Cloudflared publica el sitio hacia el dominio. PostgreSQL también queda publicado solo en localhost para tareas administrativas mediante túnel SSH, no como servicio accesible desde Internet.
+En producción, el compose levanta tres servicios principales: `postgres`, `api` y `caddy`. La API no publica puertos en el host; Caddy habla con ella por la red interna de Docker. Los únicos puertos ligados al host quedan limitados a loopback:
+
+```text
+127.0.0.1:8088 -> Caddy / Granalia
+127.0.0.1:5433 -> PostgreSQL
+```
+
+En este caso, Caddy escucha solo en localhost y Cloudflared publica el sitio hacia el dominio. PostgreSQL también queda publicado solo en localhost para tareas administrativas mediante túnel SSH, no como servicio accesible desde Internet.
 
 Decisiones relevantes:
 
 - Caddy como origen web interno.
 - PostgreSQL con volumen persistente y acceso local.
-- API detrás de Caddy, no expuesta directamente.
+- API detrás de Caddy y dentro de la red Docker, no expuesta directamente.
 - Cookies seguras, CSRF y roles de usuario.
+- Healthchecks para API y PostgreSQL.
 - Backups de base de datos y documentación de restauración.
+
+## Blog personal
+
+El blog tiene un despliegue más simple porque es un sitio estático generado con Astro. En este caso no necesitaba una base de datos, una API ni un stack de contenedores. El build estático se sirve con Nginx escuchando solo en `127.0.0.1:8080`, y Cloudflared publica el dominio hacia ese origen local.
+
+La topología queda así:
+
+```text
+valentinomensio.com -> Cloudflare -> Cloudflared -> 127.0.0.1:8080 -> Nginx -> archivos estáticos
+```
+
+Usar Nginx para el blog y Caddy en Docker para Granalia no es una inconsistencia de seguridad. La decisión depende del tipo de aplicación: Nginx es suficiente y eficiente para servir archivos estáticos; Caddy dentro de Docker Compose encaja mejor cuando el proyecto ya tiene frontend, API, base de datos y routing interno.
+
+La parte importante es que Nginx tampoco escucha en una interfaz pública. Su configuración queda ligada a `127.0.0.1:8080`, por lo que el sitio solo es alcanzable desde el propio servidor o desde Cloudflared.
 
 ## BeLeadAI
 
@@ -118,11 +152,25 @@ Y prioricé este:
 ```text
 127.0.0.1:5433 -> PostgreSQL
 127.0.0.1:8000 -> API
-127.0.0.1:8088 -> Caddy
+127.0.0.1:8088 -> Caddy / Granalia
+127.0.0.1:8080 -> Nginx / Blog
 Cloudflared -> origen local
 ```
 
 Con esto, el servicio puede operar localmente, Docker puede conectarse por red interna y Cloudflared puede publicar lo necesario sin convertir cada componente en un servicio público.
+
+En el servidor, la verificación práctica consiste en revisar contenedores, reglas del túnel y sockets abiertos:
+
+```bash
+docker ps
+docker compose ls
+cloudflared tunnel --config /etc/cloudflared/granalia.yml ingress validate
+cloudflared tunnel --config /etc/cloudflared/granalia.yml ingress rule https://granalia.com.ar
+cloudflared tunnel --config /etc/cloudflared/granalia.yml ingress rule https://valentinomensio.com
+ss -tulpn
+```
+
+Lo que busco en esa salida no es solo que la aplicación responda, sino que los puertos de aplicación y base de datos aparezcan ligados a `127.0.0.1`, no a `0.0.0.0`.
 
 ## Operación
 
@@ -134,6 +182,8 @@ El despliegue también necesita operación básica:
 - Migraciones ejecutadas antes de arrancar servicios dependientes.
 - Volúmenes separados para datos, logs, perfiles de navegador y archivos operativos.
 - Backups automatizables y restore documentado.
+- Reglas `ingress` explícitas y una regla final `http_status:404` para no enrutar hostnames no previstos.
+- Servicios systemd habilitados para que el túnel vuelva a levantar después de reiniciar el servidor.
 
 En BeLeadAI, esto fue clave porque Selenium/Chrome puede consumir recursos y los workers necesitan aislamiento. En Granalia, lo más importante fue proteger la base de datos y mantener una operación simple para un sistema de gestión real.
 
