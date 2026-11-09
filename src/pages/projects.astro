@@ -6,6 +6,21 @@ import { SITE_TITLE, SITE_URL } from '../consts';
 
 const projects = [
 	{
+		name: 'Gestión',
+		period: 'En desarrollo · Repositorio privado',
+		role: 'Desarrollador Full Stack · Arquitectura backend',
+		description:
+			'Producto empresarial modular para conectar ventas, compras, inventario, logística, facturación y finanzas sobre una base reutilizable. El diseño prioriza límites de dominio, contratos explícitos y consistencia de los procesos empresariales.',
+		details: [
+			'Organicé el backend como un monolito modular: cada dominio conserva sus reglas y datos, y colabora mediante contratos públicos; los perfiles seleccionan capacidades sin bifurcar el producto.',
+			'Abordé reintentos y fallos parciales con idempotencia, transacciones acotadas y un checkout POS reanudable, preservando snapshots históricos y trazabilidad financiera.',
+			'Integré OpenAPI con un cliente TypeScript generado y controles de CI para contratos, arquitectura, migraciones y pruebas unitarias, de integración y E2E.',
+			'El adaptador fiscal ARCA está implementado, con homologación y habilitación productiva pendientes. La evidencia runtime de POS es acotada y no certifica el producto completo.',
+		],
+		stack: ['Python', 'FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'SQLAlchemy', 'Alembic', 'OpenAPI', 'Docker', 'Pytest', 'Playwright'],
+		blogUrl: `${SITE_URL}/blog/gestion-arquitectura-modular/`,
+	},
+	{
 		name: 'Granalia',
 		period: 'Abril 2026 - actualidad',
 		role: 'Desarrollador Full Stack',
@@ -55,7 +70,7 @@ const projects = [
 	<head>
 		<BaseHead
 			title={`Proyectos | ${SITE_TITLE}`}
-			description="Proyectos personales y académicos de Valentino Mensio: Granalia, BeLeadAI y El Switcher."
+			description="Proyectos de Valentino Mensio: Gestión, arquitectura backend y sistemas empresariales; Granalia, BeLeadAI y El Switcher."
 		/>
 	</head>
 	<body>

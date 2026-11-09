@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="600" viewBox="0 0 440 600" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitectura simplificada de Gestión</title>
+  <desc id="desc">React y TypeScript consumen una API REST FastAPI mediante un cliente generado desde OpenAPI. La aplicación compone módulos con contratos públicos y una plataforma técnica. La persistencia utiliza PostgreSQL y almacenamiento de archivos separado.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 10 5 0 10Z" fill="#818cf8"/></marker>
+  </defs>
+  <rect width="440" height="600" rx="12" fill="#0f1117"/>
+  <g fill="#151820" stroke="#818cf8" stroke-opacity=".45">
+    <rect x="24" y="24" width="392" height="76" rx="6"/>
+    <rect x="24" y="156" width="392" height="76" rx="6"/>
+    <rect x="24" y="276" width="392" height="156" rx="6"/>
+    <rect x="24" y="492" width="184" height="76" rx="6"/>
+    <rect x="232" y="492" width="184" height="76" rx="6"/>
+  </g>
+  <g fill="none" stroke="#818cf8" stroke-width="2" marker-end="url(#arrow)">
+    <path d="M220 100V150"/>
+    <path d="M220 232V270"/>
+    <path d="M116 432V486"/>
+    <path d="M324 432V486"/>
+  </g>
+  <g font-family="system-ui, sans-serif" text-anchor="middle">
+    <g fill="#f0f2f5" font-size="20" font-weight="600">
+      <text x="220" y="56">React + TypeScript</text>
+      <text x="220" y="188">API REST · FastAPI</text>
+      <text x="220" y="310">Composición de módulos</text>
+      <text x="116" y="525">PostgreSQL</text>
+      <text x="324" y="525">Archivos</text>
+    </g>
+    <g fill="#cbd1dc" font-size="17">
+      <text x="220" y="81">Interfaz y adaptadores de API</text>
+      <text x="220" y="132">Cliente generado · OpenAPI</text>
+      <text x="220" y="213">Capacidades y permisos en servidor</text>
+      <text x="220" y="342">Dominios con contratos públicos</text>
+      <text x="220" y="374">Plataforma: idempotencia,</text>
+      <text x="220" y="399">numeración, outbox y storage</text>
+      <text x="116" y="551">Datos y migraciones</text>
+      <text x="324" y="551">Storage separado</text>
+    </g>
+  </g>
+</svg>

@@ -18,6 +18,14 @@ const CV_URL = '/CV-Valentino-Mensio.pdf';
 
 const projects = [
 	{
+		name: 'Gestión',
+		role: 'Full Stack Developer · Arquitectura backend',
+		description:
+			'Producto empresarial modular y reutilizable. Integra procesos comerciales, inventario, facturación y finanzas con un backend orientado a contratos, consistencia transaccional e históricos protegidos.',
+		stack: ['FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'Docker'],
+		blogUrl: `${SITE_URL}/blog/gestion-arquitectura-modular/`,
+	},
+	{
 		name: 'Granalia',
 		role: 'Full Stack Developer',
 		description:
@@ -219,6 +227,7 @@ const contributionMonths = [
 									<ul class="tag-list">
 										{project.stack.map((item) => <li>{item}</li>)}
 									</ul>
+									{project.blogUrl && <a class="case-link" href={project.blogUrl}>Leer caso técnico de Gestión</a>}
 								</article>
 							))
 						}
@@ -488,6 +497,24 @@ const contributionMonths = [
 		font-size: 1.25rem;
 		letter-spacing: -0.02em;
 		margin-bottom: 0.6rem;
+	}
+
+	.project-card:first-child {
+		grid-column: 1 / -1;
+	}
+
+	.case-link {
+		align-items: center;
+		display: inline-flex;
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
+		margin-top: 1rem;
+		min-height: 44px;
+	}
+
+	.case-link:focus-visible {
+		outline: 2px solid var(--accent-light);
+		outline-offset: 4px;
 	}
 
 	.project-card p {
