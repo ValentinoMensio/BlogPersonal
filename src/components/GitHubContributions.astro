@@ -1,0 +1,135 @@
+---
+import { getContributions, GITHUB_LOGIN } from '../lib/github-contributions';
+
+const calendar = await getContributions({ token: import.meta.env.GITHUB_CONTRIBUTIONS_TOKEN });
+const dateFormat = new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const formatDate = (date: string) => dateFormat.format(new Date(date));
+const formatCount = (count: number) => new Intl.NumberFormat('es-AR').format(count);
+const dayLabel = (day: { date: string; count: number }) => `${formatDate(day.date)}: ${formatCount(day.count)} ${day.count === 1 ? 'contribución' : 'contribuciones'}`;
+---
+
+<section class="github-contributions" aria-label="Contribuciones de GitHub de los últimos 12 meses">
+	<div class="contribution-header">
+		<p>{calendar ? `${formatCount(calendar.total)} contribuciones en los últimos 12 meses` : 'Contribuciones en GitHub'}</p>
+		<a href={`https://github.com/${GITHUB_LOGIN}`} target="_blank" rel="noreferrer">@{GITHUB_LOGIN}</a>
+	</div>
+	{calendar ? (
+		<>
+			<p class="calendar-period">{formatDate(calendar.from)} – {formatDate(calendar.to)} · Actualizado al generar el sitio</p>
+			<div class="calendar-scroll" tabindex="0" role="region" aria-label="Calendario diario de contribuciones; desplazable horizontalmente">
+				<div class="contribution-months" aria-hidden="true">
+					{calendar.months.map((month) => <span>{month}</span>)}
+				</div>
+				<div class="contribution-grid">
+					{calendar.weeks.map((week) => (
+						<div class="contribution-week">
+							{week.map((day) => day
+								? <span class={`contribution-cell level-${day.level}`} role="img" aria-label={dayLabel(day)} title={dayLabel(day)} />
+								: <span class="contribution-cell" aria-hidden="true" />)}
+						</div>
+					))}
+				</div>
+			</div>
+			<div class="contribution-legend" aria-hidden="true">
+				<span>Menos</span>
+				{[0, 1, 2, 3, 4].map((level) => <span class={`contribution-cell level-${level}`} />)}
+				<span>Más</span>
+			</div>
+		</>
+	) : (
+		<p class="calendar-period">El calendario no está disponible en esta versión del sitio. Podés consultar la actividad actual en mi perfil de GitHub.</p>
+	)}
+</section>
+
+<style>
+	.github-contributions {
+		background: rgba(13, 17, 23, 0.68);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-card);
+		margin: 0 0 1.5rem;
+		max-width: 960px;
+		padding: 1rem;
+		width: 100%;
+	}
+	.contribution-header {
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+		justify-content: space-between;
+	}
+	.contribution-header p,
+	.contribution-header a,
+	.calendar-period {
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		margin: 0;
+	}
+	.contribution-header a {
+		align-items: center;
+		color: var(--accent-light);
+		display: inline-flex;
+		min-height: 44px;
+	}
+	.calendar-period {
+		line-height: 1.6;
+		margin-bottom: 0.85rem;
+	}
+	.calendar-scroll {
+		overflow-x: auto;
+		padding: 0.25rem 0 0.5rem;
+	}
+	.calendar-scroll:focus-visible,
+	.contribution-header a:focus-visible {
+		outline: 2px solid var(--accent-light);
+		outline-offset: 3px;
+	}
+	.contribution-grid,
+	.contribution-months {
+		display: flex;
+		gap: 3px;
+		justify-content: space-between;
+		min-width: 720px;
+	}
+	.contribution-months {
+		margin-bottom: 0.5rem;
+	}
+	.contribution-months span {
+		color: var(--text-secondary);
+		flex: 0 0 10px;
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		line-height: 1;
+		white-space: nowrap;
+	}
+	.contribution-week {
+		display: grid;
+		gap: 3px;
+		grid-template-rows: repeat(7, 10px);
+	}
+	.contribution-cell {
+		border-radius: 2px;
+		display: block;
+		height: 10px;
+		width: 10px;
+	}
+	.level-0 { background: rgba(148, 163, 184, 0.12); }
+	.level-1 { background: rgba(99, 102, 241, 0.35); }
+	.level-2 { background: rgba(99, 102, 241, 0.58); }
+	.level-3 { background: rgba(129, 140, 248, 0.78); }
+	.level-4 { background: rgba(199, 210, 254, 0.95); }
+	.contribution-legend {
+		align-items: center;
+		display: flex;
+		gap: 4px;
+		justify-content: flex-end;
+		margin-top: 0.5rem;
+	}
+	.contribution-legend span {
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+	}
+</style>

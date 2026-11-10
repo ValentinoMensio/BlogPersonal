@@ -1,5 +1,62 @@
 # Astro Starter Kit: Blog
 
+## Calendario de GitHub del portfolio
+
+El hero consulta la **API GraphQL oficial de GitHub** una vez por build para
+`ValentinoMensio`. Publica únicamente fecha, cantidad e intensidad de las
+contribuciones de los últimos 12 meses (hasta el día de build, en UTC). Los meses,
+el total y los niveles de intensidad provienen de esos datos; no hay una serie
+de actividad de respaldo ni consultas desde el navegador.
+
+### Configuración
+
+Copiar `.env.example` a `.env` y configurar `GITHUB_CONTRIBUTIONS_TOKEN` sólo en
+el entorno de build. `.env` está ignorado por Git. En el proveedor de hosting,
+guardar el valor como secreto de build, **nunca** con prefijo `PUBLIC_`.
+
+GitHub GraphQL requiere autenticación. Se puede crear un token personal en
+GitHub → Settings → Developer settings → Personal access tokens. Para consultar
+actividad pública, usar un token de permisos mínimos, sin acceso a repositorios
+privados; un token fine-grained de lectura de información pública es suficiente.
+Si se usa un token classic, no conceder `repo` sólo para este calendario.
+Respetar las políticas de la organización y la expiración del token.
+
+El recuento privado depende de la visibilidad que GitHub permita y de la opción
+**Contribution settings → Private contributions** en el perfil. El calendario
+puede incluir esos recuentos anónimos cuando GitHub los devuelve. No solicita
+nombres de repositorios, commits, títulos ni detalles de actividad privada, y no
+intenta eludir restricciones de visibilidad. Una cifra no garantiza que incluya
+toda la actividad privada del usuario.
+
+### Actualización y fallos
+
+El sitio sigue siendo estático: los datos quedan fijados al ejecutar
+`npm run build`. Para actualizarlos diariamente, configurar en la plataforma
+de despliegue una reconstrucción programada diaria con ese secreto. No se agrega
+un workflow de publicación porque este repositorio no define el proveedor ni el
+mecanismo de despliegue. Hacer sólo un build en CI no actualiza el sitio público:
+el proveedor debe publicar sus artefactos mediante su flujo habitual autorizado.
+
+No hay sondeo, caché persistente ni reintentos automáticos: como máximo una
+consulta por build, con timeout de 8 segundos. Si falta el token, hay un error
+HTTP/GraphQL, se agota el tiempo o los datos están incompletos, el build continúa
+y muestra un mensaje de indisponibilidad con enlace al perfil, sin cifras
+ficticias ni un calendario vacío presentado como actividad real. Los logs no
+incluyen credenciales ni respuestas de GitHub.
+
+### Pruebas del calendario
+
+Sin dependencias adicionales (Node 22.12 o posterior):
+
+```sh
+node --experimental-strip-types --test tests/github-contributions.test.ts
+npm run build
+```
+
+Las pruebas usan respuestas sintéticas aisladas; esos datos no se incorporan al
+sitio. Para validar datos reales, configurar el secreto de build y ejecutar el
+build. Sin credenciales se puede comprobar el estado de indisponibilidad.
+
 ```sh
 npm create astro@latest -- --template blog
 ```
