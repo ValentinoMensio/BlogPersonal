@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } from '../consts';
 
-const CV_URL = '/CV-Valentino-Mensio.pdf';
+import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 ---
 
 <!doctype html>
@@ -25,7 +25,7 @@ const CV_URL = '/CV-Valentino-Mensio.pdf';
 					Construyo productos de punta a punta: interfaces, APIs, bases de datos, automatizaciones,
 					integraciones, scraping y despliegues con Docker.
 				</p>
-				<a class="btn" href={CV_URL} download>Descargar CV</a>
+				<a class="btn" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV</a>
 			</section>
 
 			<section class="section resume-grid">
@@ -45,7 +45,7 @@ const CV_URL = '/CV-Valentino-Mensio.pdf';
 						Valoro el trabajo en equipos colaborativos, donde pueda aportar con autonomía, criterio
 						técnico y compromiso en la construcción de soluciones útiles y bien diseñadas.
 					</p>
-					<a class="btn inline-cv" href={CV_URL} download>Descargar CV en PDF</a>
+					<a class="btn inline-cv" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV en PDF</a>
 				</article>
 
 				<article class="card">
