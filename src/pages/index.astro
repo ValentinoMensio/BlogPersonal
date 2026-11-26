@@ -14,54 +14,47 @@ import {
 	SITE_TITLE,
 	SITE_URL,
 } from '../consts';
+import {
+	AVAILABILITY,
+	HIGHLIGHTS,
+	LOCATION,
+	PROJECTS,
+	QUICK_FACTS,
+	ROLE_TITLE,
+	WORK_PRINCIPLES,
+} from '../data/profile';
 
 import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 
-const projects = [
-	{
-		name: 'Gestión',
-		role: 'Full Stack Developer · Arquitectura backend',
-		description:
-			'Producto empresarial modular y reutilizable. Integra procesos comerciales, inventario, facturación y finanzas con un backend orientado a contratos, consistencia transaccional e históricos protegidos.',
-		stack: ['FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'Docker'],
-		blogUrl: `${SITE_URL}/blog/gestion-arquitectura-modular/`,
-	},
-	{
-		name: 'Granalia',
-		role: 'Full Stack Developer',
-		description:
-			'Sistema web de facturación y gestión operativa para una fábrica. Centraliza clientes, productos, transportes, listas de precios, emisión de facturas PDF, roles de usuario y estadísticas para ordenar procesos internos y reducir trabajo manual.',
-		stack: ['FastAPI', 'React', 'PostgreSQL', 'ARCA', 'Docker', 'Caddy'],
-	},
-	{
-		name: 'BeLeadAI',
-		role: 'Full Stack Developer',
-		description:
-			'Plataforma de prospección y automatización comercial. Desarrollé backend, flujos automatizados, extensión Chrome, contratos de API e interfaz operativa para gestionar leads, mensajes y procesos de outreach.',
-		stack: ['FastAPI', 'MySQL', 'Redis', 'Selenium', 'Chrome MV3', 'OpenAI API'],
-	},
-	{
-		name: 'El Switcher',
-		role: 'Backend Developer',
-		description:
-			'Aplicación web multijugador en tiempo real desarrollada en equipo. Participé en la integración de backend, frontend, WebSockets, testing automatizado y dinámica de trabajo Scrum.',
-		stack: ['FastAPI', 'WebSockets', 'React', 'Pytest', 'Vitest', 'Scrum'],
-	},
-];
+const featured = PROJECTS.filter((project) => project.featured);
+const others = PROJECTS.filter((project) => !project.featured);
 
+const personSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Valentino Mensio',
+	jobTitle: ROLE_TITLE,
+	url: SITE_URL,
+	email: `mailto:${CONTACT_EMAIL}`,
+	address: { '@type': 'PostalAddress', addressLocality: 'Córdoba', addressCountry: 'AR' },
+	alumniOf: { '@type': 'CollegeOrUniversity', name: 'FAMAF - Universidad Nacional de Córdoba' },
+	knowsAbout: ['Python', 'FastAPI', 'PostgreSQL', 'React', 'TypeScript', 'Docker', 'Arquitectura de software', 'Diseño de APIs'],
+	sameAs: [GITHUB_URL, LINKEDIN_URL],
+};
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`${SITE_TITLE} · ${ROLE_TITLE}`} description={SITE_DESCRIPTION} />
+		<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 	</head>
 	<body>
 		<div class="page-wrapper">
 			<Header />
 			<main>
 				<section class="hero">
-					<p class="eyebrow">Desarrollador Full Stack · Backend y arquitectura de software</p>
+					<p class="availability"><span class="dot" aria-hidden="true"></span>{AVAILABILITY}</p>
 					<div class="hero-identity">
 						<Image
 							src={ProfileImage}
@@ -70,83 +63,191 @@ const projects = [
 							height={148}
 							class="profile-photo"
 						/>
-						<h1>Valentino<br />Mensio</h1>
+						<div>
+							<p class="eyebrow">{ROLE_TITLE} · {LOCATION}</p>
+							<h1>Valentino<br />Mensio</h1>
+						</div>
 					</div>
 					<p class="lead">
-						Desarrollo sistemas web y soluciones empresariales, con foco en backend, arquitectura de
-						software y diseño de APIs. Trabajo en productos completos: desde el modelado de dominio
-						y la persistencia hasta las integraciones, el testing y el despliegue.
+						Construyo sistemas web que las empresas usan todos los días. Hoy tengo
+						<strong>dos sistemas propios en producción</strong>: uno de gestión y facturación
+						electrónica con ARCA para una fábrica de alimentos, y un producto modular de gestión
+						comercial con punto de venta. Me ocupo de todo el ciclo: entender el proceso, diseñar el
+						backend y la API, construir la interfaz, testear y desplegar.
 					</p>
-					<GitHubContributions />
 					<div class="actions">
 						<a class="btn primary" href={`${SITE_URL}/projects/`}>Ver proyectos</a>
-						<a class="btn" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV</a>
+						<a class="btn" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV (PDF)</a>
 						<a class="btn" href="#contacto">Contactarme</a>
 					</div>
 					<p class="stack-line">
 						<span>Python</span>
 						<span>FastAPI</span>
-						<span>React</span>
 						<span>PostgreSQL</span>
+						<span>React</span>
+						<span>TypeScript</span>
 						<span>Docker</span>
 						<span>Diseño de APIs</span>
 						<span>Testing</span>
 					</p>
 				</section>
 
-				<section class="section split">
-					<div>
-						<p class="eyebrow">Perfil profesional</p>
-						<h2>Full-stack developer con foco en backend, arquitectura, automatización e integración de sistemas.</h2>
-					</div>
-					<p class="lead">
-						Analista en Computación por FAMAF y desarrollador full-stack con experiencia en
-						aplicaciones web, automatización e integración de sistemas. Desarrollo soluciones
-						end-to-end combinando frontend, backend, APIs, bases de datos, scraping y despliegues
-						con Docker.
-						<br /><br />
-						Me interesa construir sistemas mantenibles y orientados a usuarios, con especial foco en
-						backend, arquitectura, automatización e integración con APIs y servicios externos. Valoro
-						el trabajo en equipos colaborativos, donde pueda aportar con autonomía, criterio técnico y
-						compromiso en la construcción de soluciones útiles y bien diseñadas.
-					</p>
+				<section class="highlights" aria-label="Resumen en cifras">
+					{
+						HIGHLIGHTS.map((item) => (
+							<div class="highlight">
+								<p class="highlight-value">{item.value}</p>
+								<p class="highlight-label">{item.label}</p>
+								<p class="highlight-detail">{item.detail}</p>
+							</div>
+						))
+					}
+				</section>
+
+				<section class="section audience-grid">
+					<article class="card audience-card">
+						<p class="eyebrow">Perfil en 30 segundos</p>
+						<h2>Para equipos de selección</h2>
+						<dl class="facts">
+							{
+								QUICK_FACTS.map((fact) => (
+									<div>
+										<dt>{fact.label}</dt>
+										<dd>{fact.value}</dd>
+									</div>
+								))
+							}
+						</dl>
+						<div class="audience-actions">
+							<a class="btn primary" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV</a>
+							<a class="btn" href={`${SITE_URL}/about/`}>Trayectoria completa</a>
+						</div>
+					</article>
+					<article class="card audience-card">
+						<p class="eyebrow">Para equipos técnicos</p>
+						<h2>Dónde está lo interesante</h2>
+						<ul class="tech-points">
+							<li>
+								<strong>Monolito modular con contratos.</strong> 19 dominios que colaboran por
+								interfaces públicas, verificadas con tests de arquitectura.
+								<a href="/blog/gestion-arquitectura-modular/">Caso Gestión →</a>
+							</li>
+							<li>
+								<strong>Integración fiscal sin duplicados.</strong> WSAA/WSFEv1 con recuperación
+								ante timeouts consultando el último comprobante antes de reintentar.
+								<a href="/blog/granalia-sistema-facturacion/">Caso Granalia →</a>
+							</li>
+							<li>
+								<strong>Checkout reanudable.</strong> Idempotencia persistente, transacciones
+								acotadas y outbox: perder una respuesta no genera un segundo cobro.
+							</li>
+							<li>
+								<strong>Operación real.</strong> Docker, migraciones Alembic, backup automático antes
+								de cada actualización, releases versionadas y despliegue detrás de Cloudflare Tunnel.
+								<a href="/blog/despliegue-seguro-ubuntu-cloudflared/">Guía de despliegue →</a>
+							</li>
+						</ul>
+					</article>
 				</section>
 
 				<section class="section">
 					<div class="section-heading">
 						<p class="eyebrow">Proyectos destacados</p>
-						<h2>Proyectos con foco técnico y uso real.</h2>
+						<h2>Software en producción, con usuarios reales.</h2>
 					</div>
-					<div class="card-grid">
+					<div class="featured-grid">
 						{
-							projects.map((project) => (
-								<article class="card project-card">
-									<p class="role">{project.role}</p>
+							featured.map((project) => (
+								<article class="card featured-card">
+									<div class="featured-top">
+										<p class="role">{project.role}</p>
+										<span class="status">{project.statusLabel}</span>
+									</div>
 									<h3>{project.name}</h3>
-									<p>{project.description}</p>
-									<ul class="tag-list">
-										{project.stack.map((item) => <li>{item}</li>)}
+									<p class="tagline">{project.tagline}</p>
+									<p class="problem">{project.problem}</p>
+									<ul class="impact">
+										{project.impact.map((item) => <li>{item}</li>)}
 									</ul>
-									{project.blogUrl && <a class="case-link" href={project.blogUrl}>Leer caso técnico de Gestión</a>}
+									{project.metrics && (
+										<ul class="metrics">
+											{project.metrics.map((metric) => (
+												<li>
+													<strong>{metric.value}</strong> {metric.label}
+												</li>
+											))}
+										</ul>
+									)}
+									<ul class="tag-list">
+										{project.stack.slice(0, 8).map((item) => <li>{item}</li>)}
+									</ul>
+									<a class="case-link" href={project.caseUrl}>Leer caso técnico →</a>
+								</article>
+							))
+						}
+					</div>
+					<div class="card-grid other-grid">
+						{
+							others.map((project) => (
+								<article class="card project-card">
+									<div class="featured-top">
+										<p class="role">{project.role}</p>
+										<span class="status muted">{project.statusLabel}</span>
+									</div>
+									<h3>{project.name}</h3>
+									<p>{project.tagline}</p>
+									<ul class="tag-list">
+										{project.stack.slice(0, 6).map((item) => <li>{item}</li>)}
+									</ul>
+									<a class="case-link" href={project.caseUrl}>Leer caso técnico →</a>
+								</article>
+							))
+						}
+						<article class="card project-card all-projects">
+							<p class="role">Portfolio</p>
+							<h3>Todos los proyectos</h3>
+							<p>Problema, solución, resultado y stack de cada proyecto, en una sola página.</p>
+							<a class="case-link" href={`${SITE_URL}/projects/`}>Ver proyectos →</a>
+						</article>
+					</div>
+				</section>
+
+				<section class="section">
+					<div class="section-heading">
+						<p class="eyebrow">Cómo trabajo</p>
+						<h2>Criterio técnico y foco en el negocio.</h2>
+					</div>
+					<div class="card-grid principles">
+						{
+							WORK_PRINCIPLES.map((principle) => (
+								<article class="card">
+									<h3>{principle.title}</h3>
+									<p>{principle.text}</p>
 								</article>
 							))
 						}
 					</div>
 				</section>
 
+				<section class="section">
+					<GitHubContributions />
+				</section>
+
 				<section class="section contact-card" id="contacto">
 					<div>
 						<p class="eyebrow">Contacto</p>
-						<h2>¿Tenés un proceso manual, una idea de producto o una herramienta interna para construir?</h2>
+						<h2>¿Buscás a alguien para tu equipo o tenés un sistema para construir?</h2>
 						<p>
-							Estoy disponible para proyectos full-stack, automatización, integraciones y software web a medida.
+							Estoy abierto a posiciones Full Stack o Backend y a proyectos de software a medida,
+							automatización e integraciones. Respondo por mail o LinkedIn.
 						</p>
 					</div>
 					<div class="contact-links">
 						<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
 						<a href={`tel:${CONTACT_PHONE.replaceAll(' ', '')}`}>{CONTACT_PHONE}</a>
-						<a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
 						<a href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn</a>
+						<a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
+						<a href={CV_URL} download={CV_DOWNLOAD_NAME}>CV (PDF)</a>
 					</div>
 				</section>
 			</main>
@@ -162,14 +263,40 @@ const projects = [
 	}
 
 	.hero {
-		padding: 5rem 0 2.5rem;
+		padding: 4.5rem 0 2.5rem;
+	}
+
+	.availability {
+		align-items: center;
+		background: rgba(16, 185, 129, 0.08);
+		border: 1px solid rgba(16, 185, 129, 0.25);
+		border-radius: 999px;
+		color: #6ee7b7;
+		display: inline-flex;
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		gap: 0.55rem;
+		margin: 0 0 1.75rem;
+		padding: 0.35rem 0.85rem;
+	}
+
+	.dot {
+		background: #10b981;
+		border-radius: 50%;
+		box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18);
+		height: 8px;
+		width: 8px;
 	}
 
 	.hero-identity {
 		align-items: center;
 		display: flex;
 		gap: 1.5rem;
-		margin-bottom: 1.25rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.hero-identity .eyebrow {
+		margin-bottom: 0.6rem;
 	}
 
 	.profile-photo {
@@ -192,7 +319,12 @@ const projects = [
 
 	.hero .lead {
 		margin-bottom: 2rem;
-		max-width: 960px;
+		max-width: 900px;
+	}
+
+	.hero .lead strong {
+		color: var(--text-primary);
+		font-weight: 600;
 	}
 
 	.stack-line {
@@ -217,7 +349,8 @@ const projects = [
 		opacity: 0.5;
 	}
 
-	.actions {
+	.actions,
+	.audience-actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem;
@@ -233,6 +366,7 @@ const projects = [
 		font-size: 0.9rem;
 		font-weight: 600;
 		letter-spacing: 0.01em;
+		min-height: 44px;
 		padding: 0.6rem 1.2rem;
 		text-decoration: none;
 		transition: border-color 0.15s, color 0.15s, background 0.15s;
@@ -256,21 +390,159 @@ const projects = [
 		color: #fff;
 	}
 
-	.split {
-		align-items: start;
+	/* Cifras */
+	.highlights {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
 		display: grid;
-		gap: 3rem;
-		grid-template-columns: 0.85fr 1.15fr;
+		gap: 1px;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		margin-top: 1rem;
+		overflow: hidden;
 	}
 
-	.split h2 {
+	.highlight {
+		background: var(--bg-surface);
+		padding: 1.4rem 1.5rem;
+	}
+
+	.highlight p {
+		margin: 0;
+	}
+
+	.highlight-value {
 		color: var(--text-primary);
-		line-height: 1.2;
+		font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
 	}
 
+	.highlight-label {
+		color: var(--accent-light);
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.06em;
+		margin-top: 0.4rem !important;
+		text-transform: uppercase;
+	}
+
+	.highlight-detail {
+		color: var(--text-secondary);
+		font-size: 0.86rem;
+		line-height: 1.45;
+		margin-top: 0.35rem !important;
+	}
+
+	/* RRHH / técnico */
+	.audience-grid {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.audience-card {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		display: flex;
+		flex-direction: column;
+		padding: 2rem;
+	}
+
+	.audience-card h2 {
+		font-size: 1.5rem;
+		margin-bottom: 1.25rem;
+	}
+
+	.facts {
+		display: grid;
+		gap: 0.9rem;
+		margin: 0 0 1.75rem;
+	}
+
+	.facts div {
+		border-bottom: 1px solid var(--border);
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: 7.5rem 1fr;
+		padding-bottom: 0.9rem;
+	}
+
+	.facts dt {
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		letter-spacing: 0.06em;
+		padding-top: 0.2rem;
+		text-transform: uppercase;
+	}
+
+	.facts dd {
+		color: var(--text-primary);
+		font-size: 0.95rem;
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	.audience-actions {
+		margin-top: auto;
+	}
+
+	.tech-points {
+		display: grid;
+		gap: 1.1rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.tech-points li {
+		border-left: 2px solid var(--accent-dim);
+		color: var(--text-secondary);
+		font-size: 0.95rem;
+		line-height: 1.6;
+		padding-left: 1rem;
+	}
+
+	.tech-points strong {
+		color: var(--text-primary);
+	}
+
+	.tech-points a {
+		display: inline-block;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		margin-left: 0.25rem;
+	}
+
+	/* Proyectos */
 	.section-heading {
 		margin-bottom: 1.75rem;
 		max-width: 680px;
+	}
+
+	.featured-grid {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		margin-bottom: 1rem;
+	}
+
+	.featured-card {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		display: flex;
+		flex-direction: column;
+		padding: 2rem;
+	}
+
+	.featured-top {
+		align-items: flex-start;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		justify-content: space-between;
+		margin-bottom: 0.5rem;
 	}
 
 	.role {
@@ -279,19 +551,108 @@ const projects = [
 		font-size: 0.74rem;
 		font-weight: 500;
 		letter-spacing: 0.06em;
-		margin: 0 0 0.5rem;
-		opacity: 0.8;
+		margin: 0;
+		opacity: 0.85;
 		text-transform: uppercase;
 	}
 
-	.project-card h3 {
-		font-size: 1.25rem;
-		letter-spacing: -0.02em;
-		margin-bottom: 0.6rem;
+	.status {
+		background: rgba(16, 185, 129, 0.1);
+		border: 1px solid rgba(16, 185, 129, 0.25);
+		border-radius: 999px;
+		color: #6ee7b7;
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		padding: 0.15rem 0.6rem;
+		white-space: nowrap;
 	}
 
-	.project-card:first-child {
-		grid-column: 1 / -1;
+	.status.muted {
+		background: rgba(255, 255, 255, 0.04);
+		border-color: var(--border);
+		color: var(--text-secondary);
+	}
+
+	.featured-card h3,
+	.project-card h3 {
+		font-size: 1.45rem;
+		letter-spacing: -0.02em;
+		margin-bottom: 0.4rem;
+	}
+
+	.tagline {
+		color: var(--text-primary);
+		font-size: 1.02rem;
+		margin: 0 0 0.9rem;
+	}
+
+	.problem {
+		color: var(--text-secondary);
+		font-size: 0.92rem;
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	.impact {
+		color: var(--text-secondary);
+		font-size: 0.92rem;
+		line-height: 1.55;
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.impact li {
+		margin-bottom: 0.5rem;
+		padding-left: 1.4rem;
+		position: relative;
+	}
+
+	.impact li::before {
+		color: #10b981;
+		content: '✓';
+		left: 0;
+		position: absolute;
+	}
+
+	.metrics {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		list-style: none;
+		margin: 1rem 0 0;
+		padding: 0;
+	}
+
+	.metrics li {
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+	}
+
+	.metrics strong {
+		color: var(--text-primary);
+		font-size: 1rem;
+	}
+
+	.featured-card .case-link {
+		margin-top: auto;
+		padding-top: 1rem;
+	}
+
+	.other-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.project-card p {
+		color: var(--text-secondary);
+		font-size: 0.92rem;
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	.project-card .role {
+		margin: 0;
 	}
 
 	.case-link {
@@ -308,13 +669,23 @@ const projects = [
 		outline-offset: 4px;
 	}
 
-	.project-card p {
+	.principles {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+
+	.principles h3 {
+		font-size: 1.05rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.principles p {
 		color: var(--text-secondary);
-		font-size: 0.92rem;
+		font-size: 0.9rem;
 		line-height: 1.6;
 		margin: 0;
 	}
 
+	/* Contacto */
 	.contact-card {
 		background: var(--bg-elevated);
 		border: 1px solid var(--border);
@@ -334,6 +705,10 @@ const projects = [
 		font-size: clamp(1.4rem, 3vw, 2rem);
 		line-height: 1.25;
 		max-width: 640px;
+	}
+
+	.contact-card p {
+		color: var(--text-secondary);
 	}
 
 	.contact-links {
@@ -359,18 +734,37 @@ const projects = [
 		color: var(--accent-light);
 	}
 
-	@media (max-width: 720px) {
-		.hero {
-			padding-top: 3rem;
+	@media (max-width: 960px) {
+		.highlights,
+		.principles {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
-		.split {
-			gap: 1.5rem;
+		.other-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.hero {
+			padding-top: 2.5rem;
+		}
+
+		.audience-grid,
+		.featured-grid,
+		.principles {
 			grid-template-columns: 1fr;
 		}
 
+		.audience-card,
+		.featured-card,
 		.contact-card {
 			padding: 1.5rem;
+		}
+
+		.facts div {
+			gap: 0.25rem;
+			grid-template-columns: 1fr;
 		}
 	}
 
@@ -378,6 +772,10 @@ const projects = [
 		.hero-identity {
 			align-items: flex-start;
 			flex-direction: column;
+		}
+
+		.highlights {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

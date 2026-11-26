@@ -1,7 +1,7 @@
 export const SITE_TITLE = 'Valentino Mensio';
 export const SITE_URL = 'https://valentinomensio.com';
 export const SITE_DESCRIPTION =
-	'Desarrollador full-stack y product builder especializado en herramientas web, automatización y scraping.';
+	'Desarrollador Full Stack con foco en backend (Python, FastAPI, PostgreSQL, React). Dos sistemas propios en producción: gestión comercial, punto de venta y facturación electrónica con ARCA.';
 
 export const CONTACT_EMAIL = 'valentinomensio@gmail.com';
 export const CONTACT_PHONE = '+54 9 3547 608293';

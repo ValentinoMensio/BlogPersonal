@@ -2,67 +2,8 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_TITLE, SITE_URL } from '../consts';
-
-const projects = [
-	{
-		name: 'Gestión',
-		period: 'En desarrollo · Repositorio privado',
-		role: 'Desarrollador Full Stack · Arquitectura backend',
-		description:
-			'Producto empresarial modular para conectar ventas, compras, inventario, logística, facturación y finanzas sobre una base reutilizable. El diseño prioriza límites de dominio, contratos explícitos y consistencia de los procesos empresariales.',
-		details: [
-			'Organicé el backend como un monolito modular: cada dominio conserva sus reglas y datos, y colabora mediante contratos públicos; los perfiles seleccionan capacidades sin bifurcar el producto.',
-			'Abordé reintentos y fallos parciales con idempotencia, transacciones acotadas y un checkout POS reanudable, preservando snapshots históricos y trazabilidad financiera.',
-			'Integré OpenAPI con un cliente TypeScript generado y controles de CI para contratos, arquitectura, migraciones y pruebas unitarias, de integración y E2E.',
-			'El adaptador fiscal ARCA está implementado, con homologación y habilitación productiva pendientes. La evidencia runtime de POS es acotada y no certifica el producto completo.',
-		],
-		stack: ['Python', 'FastAPI', 'React', 'TypeScript', 'PostgreSQL', 'SQLAlchemy', 'Alembic', 'OpenAPI', 'Docker', 'Pytest', 'Playwright'],
-		blogUrl: `${SITE_URL}/blog/gestion-arquitectura-modular/`,
-	},
-	{
-		name: 'Granalia',
-		period: 'Abril 2026 - actualidad',
-		role: 'Desarrollador Full Stack',
-		description:
-			'Sistema full-stack para digitalizar la gestión comercial de una fábrica: pedidos, clientes, listas de precios, comprobantes PDF, estadísticas y facturación fiscal integrada con ARCA.',
-		details: [
-			'Reemplacé planillas y procesos manuales por una herramienta operativa centralizada.',
-			'Implementé facturación interna y fiscal, roles de usuario, historial de operaciones y descarga de PDFs.',
-			'Preparé el sistema para operar en producción con Docker, Caddy y PostgreSQL.',
-		],
-		stack: ['FastAPI', 'React', 'PostgreSQL', 'ARCA', 'Docker', 'Caddy'],
-		blogUrl: `${SITE_URL}/blog/granalia-sistema-facturacion/`,
-	},
-	{
-		name: 'BeLeadAI',
-		period: 'Noviembre 2025',
-		role: 'Desarrollador Full Stack & Automatización',
-		description:
-			'Producto para convertir Instagram en un canal de prospección: extrae audiencias, analiza perfiles, gestiona destinatarios y automatiza mensajes desde una extensión conectada a una API privada.',
-		details: [
-			'Construí una plataforma backend conectada a una extensión Chrome MV3 para operar flujos comerciales.',
-			'Implementé seguimiento de jobs, límites de uso, resultados y actualizaciones de estado para el cliente.',
-			'Preparé el proceso de distribución de versiones mediante GitHub Releases.',
-		],
-		stack: ['FastAPI', 'MySQL', 'Redis', 'Chrome MV3', 'WebSockets', 'GitHub Releases'],
-		blogUrl: `${SITE_URL}/blog/beleadai-automatizacion-prospeccion/`,
-	},
-	{
-		name: 'El Switcher',
-		period: '2024',
-		role: 'Desarrollador Backend y Scrum Master',
-		description:
-			'Plataforma web multijugador para un juego de mesa online, desarrollada en equipo con Scrum, testing automatizado y entregas iterativas.',
-		details: [
-			'Lideré el Sprint 2 como Scrum Master y contribuí como desarrollador backend.',
-			'Implementé reglas de juego, gestión de partidas, validaciones, WebSockets y corrección de errores.',
-			'El proyecto alcanzó alta cobertura de pruebas y entregas iterativas durante tres sprints.',
-		],
-		stack: ['FastAPI', 'WebSockets', 'React', 'Pytest', 'Vitest', 'Scrum', 'Jira'],
-		blogUrl: `${SITE_URL}/blog/el-switcher-backend-scrum/`,
-	},
-];
+import { SITE_TITLE } from '../consts';
+import { PROJECTS } from '../data/profile';
 ---
 
 <!doctype html>
@@ -70,7 +11,7 @@ const projects = [
 	<head>
 		<BaseHead
 			title={`Proyectos | ${SITE_TITLE}`}
-			description="Proyectos de Valentino Mensio: Gestión, arquitectura backend y sistemas empresariales; Granalia, BeLeadAI y El Switcher."
+			description="Proyectos de Valentino Mensio: Gestión y Granalia en producción, BeLeadAI y El Switcher. Problema, solución, resultado y stack de cada uno."
 		/>
 	</head>
 	<body>
@@ -80,31 +21,65 @@ const projects = [
 				<p class="eyebrow">Proyectos</p>
 				<h1>Software construido alrededor de problemas concretos.</h1>
 				<p class="lead">
-					Estos proyectos resumen mi experiencia desarrollando herramientas web completas:
-					interfaces, APIs, automatización, scraping, testing y despliegues. Incluyen proyectos en
-					equipo, productos propios y software usado en operación real.
+					Cada proyecto está contado igual: qué problema había, qué construí y qué resultado tuvo.
+					Dos de ellos están en producción y los usan clientes reales todos los días. Si buscás el
+					detalle técnico, cada uno tiene su caso con decisiones de arquitectura.
 				</p>
+				<nav class="jump" aria-label="Ir a un proyecto">
+					{PROJECTS.map((project) => <a href={`#${project.slug}`}>{project.name}</a>)}
+				</nav>
 			</section>
 
 			<section class="projects-list">
 				{
-					projects.map((project) => (
-						<article class="project-detail card">
+					PROJECTS.map((project) => (
+						<article class="project-detail card" id={project.slug}>
 							<div class="project-header">
 								<div>
 									<p class="eyebrow">{project.period}</p>
 									<h2>{project.name}</h2>
+									<p class="tagline">{project.tagline}</p>
 								</div>
-								<p class="role">{project.role}</p>
+								<div class="badges">
+									<span class={`status status-${project.status}`}>{project.statusLabel}</span>
+									<span class="role">{project.role}</span>
+								</div>
 							</div>
-							<p class="description">{project.description}</p>
-							<ul class="details">
-								{project.details.map((item) => <li>{item}</li>)}
-							</ul>
+
+							<p class="context">{project.context}</p>
+
+							<div class="story">
+								<div>
+									<h3>Problema</h3>
+									<p>{project.problem}</p>
+								</div>
+								<div>
+									<h3>Qué construí</h3>
+									<ul>
+										{project.solution.map((item) => <li>{item}</li>)}
+									</ul>
+								</div>
+								<div>
+									<h3>Resultado</h3>
+									<ul class="impact">
+										{project.impact.map((item) => <li>{item}</li>)}
+									</ul>
+									{project.metrics && (
+										<ul class="metrics">
+											{project.metrics.map((metric) => (
+												<li>
+													<strong>{metric.value}</strong> {metric.label}
+												</li>
+											))}
+										</ul>
+									)}
+								</div>
+							</div>
+
 							<ul class="tag-list">
 								{project.stack.map((item) => <li>{item}</li>)}
 							</ul>
-							<a class="case-link" href={project.blogUrl}>Leer caso técnico</a>
+							<a class="case-link" href={project.caseUrl}>Leer caso técnico →</a>
 						</article>
 					))
 				}
@@ -119,13 +94,35 @@ const projects = [
 		max-width: 900px;
 		padding: 3rem 0 1rem;
 	}
+	.jump {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1.5rem;
+	}
+	.jump a {
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		padding: 0.35rem 0.85rem;
+		text-decoration: none;
+	}
+	.jump a:hover {
+		border-color: var(--accent-light);
+		color: var(--accent-light);
+	}
 	.projects-list {
 		display: grid;
 		gap: 1.25rem;
 		margin-top: 2rem;
 	}
 	.project-detail {
-		padding: 1.5rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		padding: 2rem;
+		scroll-margin-top: 80px;
 	}
 	.project-header {
 		align-items: start;
@@ -134,7 +131,36 @@ const projects = [
 		justify-content: space-between;
 	}
 	.project-header h2 {
-		margin-bottom: 0;
+		margin-bottom: 0.25rem;
+	}
+	.tagline {
+		color: var(--text-primary);
+		font-size: 1.1rem;
+		margin: 0;
+	}
+	.badges {
+		align-items: flex-end;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.status {
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		padding: 0.25rem 0.7rem;
+		white-space: nowrap;
+	}
+	.status-production {
+		background: rgba(16, 185, 129, 0.1);
+		border: 1px solid rgba(16, 185, 129, 0.25);
+		color: #6ee7b7;
+	}
+	.status-product,
+	.status-academic {
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid var(--border);
+		color: var(--text-secondary);
 	}
 	.role {
 		background: var(--accent-dim);
@@ -142,24 +168,80 @@ const projects = [
 		border-radius: 999px;
 		color: var(--accent-light);
 		font-family: var(--font-mono);
-		font-size: 0.88rem;
+		font-size: 0.8rem;
 		font-weight: 500;
-		margin: 0;
-		padding: 0.4rem 0.7rem;
+		padding: 0.3rem 0.7rem;
 		white-space: nowrap;
 	}
-	.description {
-		color: var(--text-secondary);
-		font-size: 1.12rem;
-		max-width: 860px;
+	.context {
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		margin: 0.75rem 0 0;
 	}
-	.details {
-		color: var(--text-secondary);
-		margin: 1rem 0 0;
-		padding-left: 1.25rem;
+	.story {
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: 1fr 1.4fr 1fr;
+		margin-top: 1.5rem;
 	}
-	.details li {
-		margin-bottom: 0.4rem;
+	.story h3 {
+		color: var(--accent-light);
+		font-family: var(--font-mono);
+		font-size: 0.76rem;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+		margin-bottom: 0.6rem;
+		text-transform: uppercase;
+	}
+	.story p,
+	.story ul {
+		color: var(--text-secondary);
+		font-size: 0.94rem;
+		line-height: 1.6;
+		margin: 0;
+	}
+	.story ul {
+		padding-left: 1.1rem;
+	}
+	.story li {
+		margin-bottom: 0.5rem;
+	}
+	.story .impact {
+		list-style: none;
+		padding: 0;
+	}
+	.impact li {
+		padding-left: 1.4rem;
+		position: relative;
+	}
+	.impact li::before {
+		color: #10b981;
+		content: '✓';
+		left: 0;
+		position: absolute;
+	}
+	.metrics {
+		display: grid;
+		gap: 0.4rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		list-style: none;
+		margin: 1rem 0 0 !important;
+		padding: 0 !important;
+	}
+	.metrics li {
+		background: var(--bg-elevated);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		margin: 0;
+		padding: 0.5rem 0.6rem;
+	}
+	.metrics strong {
+		color: var(--text-primary);
+		display: block;
+		font-size: 1.05rem;
 	}
 	.case-link {
 		display: inline-flex;
@@ -168,11 +250,23 @@ const projects = [
 		font-weight: 500;
 		letter-spacing: 0.04em;
 		margin-top: 1.25rem;
-		text-transform: uppercase;
+		min-height: 44px;
+		align-items: center;
+	}
+	@media (max-width: 900px) {
+		.story {
+			grid-template-columns: 1fr;
+		}
 	}
 	@media (max-width: 720px) {
+		.project-detail {
+			padding: 1.5rem;
+		}
 		.project-header {
 			flex-direction: column;
+		}
+		.badges {
+			align-items: flex-start;
 		}
 		.role {
 			white-space: normal;

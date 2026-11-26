@@ -2,12 +2,15 @@
 title: 'Gestión: arquitectura modular para procesos empresariales consistentes'
 description: 'Diseño de un producto con FastAPI, React y PostgreSQL: límites de dominio, contratos OpenAPI, idempotencia, POS reanudable y pruebas automatizadas.'
 pubDate: 'Nov 09 2026'
+updatedDate: 'Nov 25 2026'
 ---
 
 Gestión es un producto empresarial modular y reutilizable que desarrollo para conectar procesos comerciales, inventario, logística, facturación y finanzas. El desafío no es solamente ofrecer pantallas para cargar datos: es conseguir que una operación conserve su significado cuando intervienen varios dominios, aparecen reintentos o cambian los datos maestros.
 
 Una venta, una entrega, una factura, una deuda y un cobro están relacionados, pero no son el mismo hecho. Modelarlos como si fueran una única operación vuelve difíciles las entregas parciales, las anulaciones y la recuperación ante errores. Esa separación es el punto de partida del proyecto.
 
+> **Actualización 25/11/2026:** Gestión pasó a producción. La versión v0.10.0 opera en un showroom de indumentaria infantil que vende en consignación; el detalle está en [Gestión en producción](#gestión-en-producción).
+>
 > Este caso presenta decisiones de ingeniería y capacidades revisadas a noviembre de 2026. El repositorio es privado: no se publica código interno ni documentación confidencial. Gestión y [Granalia](/blog/granalia-sistema-facturacion/) son proyectos diferentes; las experiencias productivas de Granalia no acreditan el estado de Gestión.
 
 ## Objetivos del producto
@@ -129,6 +132,38 @@ GitHub Actions ejecuta lint, comprobaciones de tipos, tests, builds y controles 
 
 En la revisión de este artículo, la ejecución de CI correspondiente al commit inspeccionado de `main` figura como exitosa. Es evidencia de los controles de esa ejecución, no una certificación de todos los escenarios de negocio. No ejecuté nuevamente la suite completa de Gestión para preparar esta publicación.
 
+## Gestión en producción
+
+En noviembre de 2026 Gestión dejó de ser sólo un producto en desarrollo: la primera instalación productiva opera en un showroom de indumentaria infantil que vende mercadería propia y en consignación. Es una instalación aislada, con su propia base, archivos, secretos y respaldos, tal como plantea el modelo del producto.
+
+### Un perfil, no un fork
+
+El negocio usa sólo una parte de los módulos. Su perfil habilita catálogo, precios, stock por ubicación (exhibido y depósito), proveedoras como contrapartes, punto de venta con comprobante interno y consignación; el resto de los módulos se activa únicamente cuando lo exige una dependencia. Por ejemplo, Fiscal queda habilitado porque POS depende de él, pero sin puntos de venta fiscales configurados no se generan solicitudes ni CAE: el negocio decidió operar con comprobantes internos.
+
+Que el perfil se valide contra la imagen de la versión antes de arrancar evita descubrir en producción una dependencia faltante.
+
+### Lo que agregó el uso real
+
+Poner el sistema frente a usuarias reales ordenó las prioridades. Entre las versiones v0.3.0 y v0.10.0 se sumaron, entre otras cosas:
+
+- **Consignación:** acuerdos con consignantes, ingreso y devolución de prendas, acumulado por venta y liquidaciones que se registran como cuentas a pagar.
+- **Etiquetas y escaneo:** etiquetas de precio con código Code 128 configurables por empresa y alta de artículos en el mostrador con lectora o cámara del celular.
+- **Catálogo con imágenes:** imágenes de productos, variantes y presentaciones, con principal, orden y herencia, visibles en listados, buscador y mostrador.
+- **Atributos configurables:** talle, color u otros atributos definidos por empresa, que arman el nombre de cada variante y permiten filtrar e importar.
+- **Alta rápida:** crear un producto con su precio de venta en una sola operación atómica desde el formulario.
+
+Cada cambio siguió el mismo circuito: issue, rama, pull request con tests y una versión etiquetada.
+
+### Despliegue y operación
+
+Cada cliente tiene un repositorio de despliegue que no contiene código de producto, sólo `profile.yaml`, la configuración y scripts. La única palanca de actualización es el archivo `VERSION`, que cambia un script que hace backup antes de migrar y deja registro de qué versión corresponde a qué respaldo. Las imágenes de la aplicación y de la web se publican versionadas; Compose levanta PostgreSQL, almacenamiento compatible con S3, la migración, la API, el worker y la web, con todos los puertos enlazados a `127.0.0.1` y el acceso público a través de un túnel de Cloudflare.
+
+La carga inicial (usuarias, artículos, stock, cajas y ventas históricas previas a la migración) se hizo con un script idempotente con estado persistido, para poder repetirlo por etapas sin duplicar datos.
+
+### Lo que sigue sin estar demostrado
+
+La puesta en producción no cambia los límites descritos en este caso: este cliente no factura con ARCA, así que la integración fiscal de Gestión sigue sin homologación ni uso productivo. Tampoco certifica todos los módulos: el showroom usa una parte de la composición y los demás circuitos conservan el nivel de validación indicado más abajo.
+
 ## Desafíos técnicos y decisiones de diseño
 
 ### Separar hechos sin fragmentar innecesariamente el sistema
@@ -157,7 +192,9 @@ Los perfiles permiten seleccionar módulos sin eliminar su historia ni mantener 
 
 **Evidencia de ejecución acotada:** además del CI consultado, existe aceptación registrada de un conjunto de comandos POS con backend y PostgreSQL reales, datos sintéticos, recuperación de respuestas perdidas y recorridos en móvil, tablet y escritorio, en temas claro y oscuro. Esa evidencia no cubre el checkout completo ni certifica la aceptación visual de toda la aplicación.
 
-**Pendiente de validación:** aceptación integrada y visual del conjunto de workflows, homologación fiscal y condiciones de habilitación productiva. No presento Gestión como un producto validado en producción ni atribuyo usuarios, métricas o resultados comerciales no demostrados.
+**En producción:** desde noviembre de 2026, v0.10.0 en un comercio minorista con POS, catálogo, stock, consignación y comprobantes internos ([detalle](#gestión-en-producción)).
+
+**Pendiente de validación:** aceptación integrada y visual de los workflows que ese cliente no usa (logística, compras, facturación fiscal, cuentas corrientes completas) y homologación fiscal con ARCA. No atribuyo métricas comerciales que no estén demostradas.
 
 **Planificado:** manufactura, costeo industrial, reporting ampliado, operación offline/PWA, perfiles comerciales finales e integraciones bancarias. La conciliación bancaria, pagos divididos y medios de pago integrados tampoco deben inferirse de la infraestructura existente. Las ampliaciones de recuperación financiera tienen diseño aprobado en ciertos alcances, pero eso no las convierte en funcionalidades disponibles.
 

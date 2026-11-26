@@ -3,8 +3,28 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { CONTACT_EMAIL, CONTACT_PHONE, GITHUB_URL, LINKEDIN_URL, SITE_TITLE } from '../consts';
+import { AVAILABILITY, EXPERIENCE, QUICK_FACTS, WORK_PRINCIPLES } from '../data/profile';
 
 import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
+
+const skills = [
+	{
+		group: 'Uso diario',
+		items: ['Python', 'FastAPI', 'Pydantic', 'SQLAlchemy', 'PostgreSQL', 'Alembic', 'React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Docker / Compose', 'Pytest', 'Git y GitHub'],
+	},
+	{
+		group: 'Experiencia en proyectos',
+		items: ['TanStack Query', 'OpenAPI', 'WebSockets', 'Redis', 'MySQL', 'Playwright', 'Vitest', 'GitHub Actions', 'Caddy / Nginx', 'Cloudflare Tunnel', 'MinIO / S3', 'Chrome Extensions MV3', 'Selenium'],
+	},
+	{
+		group: 'Integraciones y documentos',
+		items: ['ARCA (WSAA / WSFEv1)', 'OpenAI API', 'ReportLab', 'pypdf', 'OpenPyXL', 'MapLibre', 'Code 128 / escaneo'],
+	},
+	{
+		group: 'Calidad y operación',
+		items: ['Ruff', 'mypy', 'ESLint', 'Prettier', 'structlog', 'Prometheus', 'OpenTelemetry', 'Backups y restore', 'Jira', 'Scrum'],
+	},
+];
 ---
 
 <!doctype html>
@@ -12,7 +32,7 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 	<head>
 		<BaseHead
 			title={`Sobre mí | ${SITE_TITLE}`}
-			description="Perfil profesional, educación, habilidades y contacto de Valentino Mensio."
+			description="Perfil profesional, trayectoria, formación, habilidades y contacto de Valentino Mensio, desarrollador Full Stack con foco en backend."
 		/>
 	</head>
 	<body>
@@ -20,67 +40,118 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 		<main>
 			<section class="page-hero">
 				<p class="eyebrow">Sobre mí</p>
-				<h1>Soy full-stack developer y product builder especializado en herramientas web completas.</h1>
+				<h1>Desarrollador Full Stack con foco en backend, que lleva sistemas a producción.</h1>
 				<p class="lead">
-					Construyo productos de punta a punta: interfaces, APIs, bases de datos, automatizaciones,
-					integraciones, scraping y despliegues con Docker.
+					Soy Analista en Computación por FAMAF (UNC) y curso la Licenciatura en Ciencias de la
+					Computación. Desde 2026 desarrollo y opero dos sistemas que usan clientes reales todos los
+					días: uno de gestión y facturación electrónica para una fábrica de alimentos, y un producto
+					modular de gestión comercial con punto de venta.
 				</p>
-				<a class="btn" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV</a>
+				<p class="availability"><span class="dot" aria-hidden="true"></span>{AVAILABILITY}</p>
+				<div class="actions">
+					<a class="btn primary" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV (PDF)</a>
+					<a class="btn" href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn</a>
+				</div>
 			</section>
 
 			<section class="section resume-grid">
 				<article class="card wide">
 					<h2>Perfil profesional</h2>
 					<p>
-						Analista en Computación por FAMAF y desarrollador full-stack con experiencia en
-						aplicaciones web, automatización e integración de sistemas. Desarrollo soluciones
-						end-to-end combinando frontend, backend, APIs, bases de datos, scraping y despliegues
-						con Docker.
+						Me gusta el trabajo que está entre el negocio y el código: entender cómo opera una empresa,
+						traducirlo a un modelo de datos y reglas claras, y construir una herramienta que la gente use
+						sin pensar en ella. Trabajo de punta a punta (frontend, backend, base de datos, integraciones
+						y despliegue), pero donde más aporto es en el backend: diseño de APIs, consistencia de datos,
+						transacciones e integraciones con servicios externos.
 					</p>
 					<p>
-						Me interesa construir sistemas mantenibles y orientados a usuarios, con especial foco en
-						backend, arquitectura, automatización e integración con APIs y servicios externos.
+						Trabajo con un flujo profesional aun en proyectos propios: issues, ramas, pull requests, CI
+						con tests y documentación de decisiones. Busco sumarme a un equipo donde pueda aportar con
+						autonomía y criterio técnico, y seguir aprendiendo de personas con más experiencia.
 					</p>
-					<p>
-						Valoro el trabajo en equipos colaborativos, donde pueda aportar con autonomía, criterio
-						técnico y compromiso en la construcción de soluciones útiles y bien diseñadas.
-					</p>
-					<a class="btn inline-cv" href={CV_URL} download={CV_DOWNLOAD_NAME}>Descargar CV en PDF</a>
+				</article>
+
+				<article class="card wide">
+					<h2>Trayectoria</h2>
+					<ol class="timeline">
+						{
+							EXPERIENCE.map((item) => (
+								<li>
+									<p class="period">{item.period}</p>
+									<div>
+										<h3>{item.title}</h3>
+										<p class="exp-role">{item.role}</p>
+										<p>{item.summary}</p>
+									</div>
+								</li>
+							))
+						}
+					</ol>
+					<a class="case-link" href="/projects/">Ver detalle de cada proyecto →</a>
+				</article>
+
+				<article class="card">
+					<h2>Datos rápidos</h2>
+					<dl class="facts">
+						{
+							QUICK_FACTS.map((fact) => (
+								<div>
+									<dt>{fact.label}</dt>
+									<dd>{fact.value}</dd>
+								</div>
+							))
+						}
+					</dl>
 				</article>
 
 				<article class="card">
 					<h2>Educación</h2>
 					<h3>FAMAF - Universidad Nacional de Córdoba</h3>
+					<p>Analista en Computación (título intermedio).</p>
 					<p>Licenciatura en Ciencias de la Computación, 2021 - actualidad.</p>
 					<h3>Instituto Técnico Superior El Obraje</h3>
 					<p>Técnico en Informática Profesional y Personal, 2014 - 2020.</p>
 				</article>
 
-				<article class="card">
-					<h2>Habilidades</h2>
-					<ul class="skills-list">
-						<li><strong>Lenguajes:</strong> Python, JavaScript, TypeScript, Java</li>
-						<li><strong>Frontend:</strong> React, Vite, React Router, Tailwind CSS, Chakra UI</li>
-						<li><strong>Backend & APIs:</strong> FastAPI, Flask, Pydantic, SQLAlchemy, WebSockets</li>
-						<li><strong>Automatización & Scraping:</strong> Selenium, undetected-chromedriver, selenium-stealth, Chrome Extensions MV3</li>
-						<li><strong>Bases de datos:</strong> PostgreSQL, MySQL, SQLite, Redis</li>
-						<li><strong>Infraestructura:</strong> Docker, Docker Compose, Caddy, Gunicorn, GitHub Actions, Alembic</li>
-						<li><strong>IA, datos & documentos:</strong> OpenAI API, Boto3/AWS, OpenPyXL, ReportLab, pypdf</li>
-						<li><strong>Testing & calidad:</strong> Pytest, Vitest, node:test, ESLint, Prettier, Ruff</li>
-						<li><strong>Observabilidad:</strong> structlog, Prometheus, OpenTelemetry</li>
-						<li><strong>Plataformas:</strong> Jira, Bitbucket, GitHub</li>
-						<li><strong>Idiomas:</strong> Inglés básico en estudio</li>
-					</ul>
+				<article class="card wide">
+					<h2>Habilidades técnicas</h2>
+					<div class="skills">
+						{
+							skills.map((skill) => (
+								<div>
+									<h3>{skill.group}</h3>
+									<ul class="tag-list">
+										{skill.items.map((item) => <li>{item}</li>)}
+									</ul>
+								</div>
+							))
+						}
+					</div>
+				</article>
+
+				<article class="card wide">
+					<h2>Cómo trabajo</h2>
+					<div class="principles">
+						{
+							WORK_PRINCIPLES.map((principle) => (
+								<div>
+									<h3>{principle.title}</h3>
+									<p>{principle.text}</p>
+								</div>
+							))
+						}
+					</div>
 				</article>
 			</section>
 
 			<section class="section card contact-card">
 				<h2>Contacto</h2>
+				<p>Para entrevistas, propuestas o consultas técnicas, escribime por mail o LinkedIn.</p>
 				<div class="contact-links">
 					<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
 					<a href={`tel:${CONTACT_PHONE.replaceAll(' ', '')}`}>{CONTACT_PHONE}</a>
-					<a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
 					<a href={LINKEDIN_URL} target="_blank" rel="noreferrer">LinkedIn</a>
+					<a href={GITHUB_URL} target="_blank" rel="noreferrer">GitHub</a>
 				</div>
 			</section>
 		</main>
@@ -93,10 +164,39 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 		max-width: 920px;
 		padding: 3rem 0 1rem;
 	}
+	.availability {
+		align-items: center;
+		background: rgba(16, 185, 129, 0.08);
+		border: 1px solid rgba(16, 185, 129, 0.25);
+		border-radius: 999px;
+		color: #6ee7b7;
+		display: inline-flex;
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		gap: 0.55rem;
+		margin: 0.5rem 0 1.5rem;
+		padding: 0.35rem 0.85rem;
+	}
+	.dot {
+		background: #10b981;
+		border-radius: 50%;
+		height: 8px;
+		width: 8px;
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
 	.resume-grid {
 		display: grid;
 		gap: 1rem;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.resume-grid .card {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
+		padding: 2rem;
 	}
 	.wide {
 		grid-column: 1 / -1;
@@ -108,8 +208,7 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 		font-size: 1.1rem;
 		margin-top: 1.25rem;
 	}
-	.card p,
-	.skills-list {
+	.card p {
 		color: var(--text-secondary);
 	}
 	.btn {
@@ -122,6 +221,7 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 		font-size: 0.9rem;
 		font-weight: 600;
 		letter-spacing: 0.01em;
+		min-height: 44px;
 		padding: 0.6rem 1.2rem;
 		text-decoration: none;
 		transition: border-color 0.15s, color 0.15s, background 0.15s;
@@ -131,22 +231,120 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 		border-color: var(--border-hover);
 		color: var(--text-primary);
 	}
-	.inline-cv {
+	.btn.primary {
+		background: var(--accent);
+		border-color: var(--accent);
+		color: #fff;
+	}
+	.btn.primary:hover {
+		background: var(--accent-light);
+		color: #fff;
+	}
+	.timeline {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	.timeline li {
+		border-left: 2px solid var(--accent-dim);
+		display: grid;
+		gap: 1.25rem;
+		grid-template-columns: 10rem 1fr;
+		padding: 0 0 1.5rem 1.25rem;
+		position: relative;
+	}
+	.timeline li::before {
+		background: var(--accent);
+		border-radius: 50%;
+		content: '';
+		height: 10px;
+		left: -6px;
+		position: absolute;
+		top: 0.35rem;
+		width: 10px;
+	}
+	.timeline h3 {
+		margin: 0 0 0.2rem;
+	}
+	.timeline p {
+		margin: 0;
+	}
+	.period {
+		color: var(--text-muted) !important;
+		font-family: var(--font-mono);
+		font-size: 0.8rem;
+		padding-top: 0.2rem;
+	}
+	.exp-role {
+		color: var(--accent-light) !important;
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		margin-bottom: 0.4rem !important;
+	}
+	.facts {
+		display: grid;
+		gap: 0.8rem;
+		margin: 0;
+	}
+	.facts div {
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 0.8rem;
+	}
+	.facts dt {
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.facts dd {
+		color: var(--text-primary);
+		margin: 0.2rem 0 0;
+	}
+	.skills {
+		display: grid;
+		gap: 0.5rem 2rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.skills h3 {
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.78rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.skills .tag-list {
+		margin-top: 0.6rem;
+	}
+	.principles {
+		display: grid;
+		gap: 0.5rem 2rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.principles h3 {
+		margin-bottom: 0.4rem;
+	}
+	.principles p {
+		margin: 0;
+	}
+	.case-link {
+		display: inline-flex;
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
 		margin-top: 0.5rem;
-	}
-	.skills-list {
-		padding-left: 1.25rem;
-	}
-	.skills-list li {
-		margin-bottom: 0.75rem;
 	}
 	.contact-card {
 		background: var(--bg-elevated);
 		border: 1px solid var(--border);
+		border-radius: var(--radius-lg);
 		color: var(--text-primary);
+		padding: 2rem;
 	}
 	.contact-card h2 {
 		color: var(--text-primary);
+	}
+	.contact-card p {
+		color: var(--text-secondary);
 	}
 	.contact-links {
 		display: flex;
@@ -168,7 +366,16 @@ import { CV_URL, CV_DOWNLOAD_NAME } from '../lib/cv-url';
 		color: var(--accent-light);
 	}
 	@media (max-width: 720px) {
-		.resume-grid {
+		.resume-grid,
+		.skills,
+		.principles {
+			grid-template-columns: 1fr;
+		}
+		.resume-grid .card {
+			padding: 1.5rem;
+		}
+		.timeline li {
+			gap: 0.25rem;
 			grid-template-columns: 1fr;
 		}
 	}
