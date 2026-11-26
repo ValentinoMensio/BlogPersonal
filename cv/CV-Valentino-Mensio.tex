@@ -1,5 +1,5 @@
 % CV de Valentino Mensio. Fuente del PDF publicado en public/CV-Valentino-Mensio.pdf.
-% Se compila en Overleaf (pdfLaTeX) junto a la carpeta cv-icons/ (mail, phone, linkedin,
+% Compilar desde cv/: ~/bin/tectonic/tectonic CV-Valentino-Mensio.tex (o en Overleaf) con cv-icons/ (mail, phone, linkedin,
 % github, web .png). Datos y cifras alineados con src/data/profile.ts (2026-11-25).
 \documentclass[letterpaper,10pt]{article}
 \usepackage[margin=0.38in]{geometry}
@@ -56,7 +56,7 @@
   \small
   \contactitem{mail}{mailto:valentinomensio@gmail.com}{valentinomensio@gmail.com} \quad | \quad
   \contactitem{phone}{tel:+5493547608293}{+54 9 3547 608293} \quad | \quad
-  Córdoba, Argentina · remoto o híbrido\\[2pt]
+  Córdoba, Argentina (remoto o híbrido)\\[2pt]
   \contactitem{linkedin}{https://www.linkedin.com/in/valentino-mensio}{linkedin.com/in/valentino-mensio} \quad | \quad
   \contactitem{github}{https://github.com/ValentinoMensio}{github.com/ValentinoMensio} \quad | \quad
   \contactitem{web}{https://valentinomensio.com}{valentinomensio.com}
@@ -67,62 +67,58 @@
 \section{Perfil profesional}
 \vspace{2pt}
 \begingroup\linespread{1.04}\selectfont
-\textbf{Analista en Computación por FAMAF (UNC)} y desarrollador \textbf{backend / full stack}. Desarrollo y opero \textbf{dos sistemas propios en producción} que usan clientes reales todos los días: gestión y \textbf{facturación electrónica con ARCA} para una fábrica de alimentos, y un \textbf{producto modular de gestión comercial con punto de venta}. Me especializo en \textbf{Python, FastAPI, PostgreSQL}, diseño de APIs y modelado de dominio, con foco en consistencia de datos, \textbf{testing} y despliegue con \textbf{Docker}. Busco sumarme a un equipo donde aportar autonomía y criterio técnico, y seguir aprendiendo.
+\textbf{Analista en Computación por FAMAF (UNC)} y desarrollador \textbf{backend / full stack}. Desarrollo y opero \textbf{dos sistemas propios en producción} que usan clientes reales todos los días: gestión y \textbf{facturación electrónica con ARCA} para una fábrica de alimentos, y un \textbf{producto modular de gestión comercial con punto de venta}. Me especializo en \textbf{Python, FastAPI, PostgreSQL}, diseño de APIs y modelado de dominio, con foco en consistencia de datos, \textbf{testing} y despliegue con \textbf{Docker}.
 \endgroup
 
 %-----------EXPERIENCIA-----------
 \section{Experiencia}
 \vspace{2pt}
-\entry{Gestión · producto propio \bloglink{https://valentinomensio.com/blog/gestion-arquitectura-modular/}}{Julio 2026 -- actualidad}{Desarrollador Backend / Full Stack}{Python, FastAPI, PostgreSQL, React, TypeScript, Docker}
+\entry{Gestión -- producto propio \bloglink{https://valentinomensio.com/blog/gestion-arquitectura-modular/}}{Julio 2026 -- actualidad}{Desarrollador Backend / Full Stack}{Python, FastAPI, PostgreSQL, React, TypeScript, Docker}
 \begin{itemize}
   \item Llevé a \textbf{producción en 4 meses} (14 versiones) un producto de gestión comercial con \textbf{19 módulos}: ventas, inventario, POS, facturación, cuentas corrientes, tesorería y consignación. Desde noviembre de 2026 opera en un \textbf{comercio minorista}.
   \item Diseñé un \textbf{monolito modular} con contratos públicos entre dominios, verificados por tests de arquitectura; API \textbf{OpenAPI} con cliente TypeScript generado y 177 migraciones Alembic.
   \item Resolví reintentos y fallos parciales con \textbf{idempotencia} persistente, transacciones acotadas, outbox con worker y un \textbf{checkout POS reanudable} que no duplica cobros.
-  \item \textbf{Más de 3.000 tests} (unitarios, integración con PostgreSQL real, contratos y E2E con Playwright), CI y \textbf{más de 190 pull requests}.
-  \item Despliegue por cliente con imágenes Docker versionadas, perfil de módulos, backup previo a cada actualización y Cloudflare Tunnel.
+  \item \textbf{Más de 3.000 tests} (unitarios, integración con PostgreSQL real, contratos y E2E con Playwright), CI y \textbf{más de 190 pull requests}; despliegue con imágenes Docker versionadas, backup previo a cada actualización y Cloudflare Tunnel.
 \end{itemize}
 
-\entry{Granalia · cliente \bloglink{https://valentinomensio.com/blog/granalia-sistema-facturacion/}}{Abril 2026 -- actualidad}{Desarrollador Full Stack}{FastAPI, React, PostgreSQL, Docker, ARCA}
+\entry{Granalia -- cliente \bloglink{https://valentinomensio.com/blog/granalia-sistema-facturacion/}}{Abril 2026 -- actualidad}{Desarrollador Full Stack}{FastAPI, React, PostgreSQL, Docker, ARCA}
 \begin{itemize}
   \item Desarrollé el sistema de gestión comercial que una \textbf{fábrica de alimentos usa a diario desde abril de 2026}: reemplazó planillas para pedidos, clientes, listas de precios, remitos, compras y stock.
   \item Integré \textbf{facturación electrónica con ARCA} (WSAA / WSFEv1): Factura A y notas de crédito con CAE, recuperación ante timeouts \textbf{sin duplicar numeración}, comprobantes autorizados bloqueados y auditoría sin secretos.
-  \item Construí estadísticas para la dirección: \textbf{rentabilidad por producto} con costos de materia prima y envases, costo de reposición, rankings y mapa de clientes.
-  \item Me ocupo del desarrollo, el despliegue en \textbf{Ubuntu Server} (Docker, PostgreSQL, Caddy) y el soporte continuo.
+  \item Construí estadísticas para la dirección: \textbf{rentabilidad por producto} con costos de materia prima y envases, costo de reposición, rankings y mapa de clientes. Desarrollo, despliegue en \textbf{Ubuntu Server} (Docker, Caddy) y soporte continuo.
 \end{itemize}
 
 %-----------PROYECTOS-----------
 \section{Proyectos}
 \vspace{2pt}
-\entry{BeLeadAI · producto propio \bloglink{https://valentinomensio.com/blog/beleadai-automatizacion-prospeccion/}}{Noviembre 2025 -- marzo 2026}{Desarrollador Full Stack}{FastAPI, MySQL, Redis, Selenium, Chrome MV3}
+\entry{BeLeadAI -- producto propio \bloglink{https://valentinomensio.com/blog/beleadai-automatizacion-prospeccion/}}{Noviembre 2025 -- marzo 2026}{Desarrollador Full Stack}{FastAPI, MySQL, Redis, Selenium, Chrome MV3}
 \begin{itemize}
   \item Plataforma de \textbf{prospección automatizada} en Instagram: una extensión Chrome conectada a una API privada extrae audiencias, analiza perfiles y encola campañas.
-  \item Diseñé \textbf{jobs asíncronos}, colas, workers por cuenta, cuotas, reintentos, idempotencia y seguimiento de estados por WebSockets, contemplando errores de scraping y sesiones.
+  \item Diseñé \textbf{jobs asíncronos}, colas en Redis, workers por cuenta, cuotas, reintentos e idempotencia, y estado por WebSockets.
 \end{itemize}
 
-\entry{El Switcher · FAMAF, equipo \bloglink{https://valentinomensio.com/blog/el-switcher-backend-scrum/}}{Septiembre -- octubre 2024}{Desarrollador Backend y Scrum Master}{FastAPI, WebSockets, React, Pytest}
+\entry{El Switcher -- FAMAF, en equipo \bloglink{https://valentinomensio.com/blog/el-switcher-backend-scrum/}}{Septiembre -- octubre 2024}{Desarrollador Backend y Scrum Master}{FastAPI, WebSockets, React, Pytest}
 \begin{itemize}
-  \item Implementé reglas de juego y partidas \textbf{multijugador en tiempo real} con WebSockets y \textbf{arquitectura hexagonal}; el backend alcanzó \textbf{95\% de cobertura} de tests.
+  \item Partidas \textbf{multijugador en tiempo real} con WebSockets y \textbf{arquitectura hexagonal}; \textbf{95\% de cobertura} de tests en backend.
   \item Fui \textbf{Scrum Master} en el Sprint 2: planificación, dailies, tickets con criterios de aceptación y seguimiento de bloqueos.
 \end{itemize}
 
 %-----------EDUCACIÓN-----------
 \section{Educación}
 \vspace{2pt}
-\entry{Universidad Nacional de Córdoba -- FAMAF}{2021 -- actualidad}{Analista en Computación (título obtenido) · Licenciatura en Ciencias de la Computación en curso}{}
+\entry{Universidad Nacional de Córdoba -- FAMAF}{2021 -- actualidad}{Analista en Computación (título obtenido); Licenciatura en Ciencias de la Computación en curso}{}
 \entry{Instituto Técnico Superior ``El Obraje''}{2014 -- 2020}{Técnico en Informática Profesional y Personal}{}
 
 %-----------HABILIDADES-----------
 \section{Habilidades técnicas}
 \vspace{2pt}
-\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.22\textwidth}X@{}}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.18\textwidth}X@{}}
 Lenguajes: & Python | TypeScript | JavaScript | SQL \\
-Backend y APIs: & FastAPI | Pydantic | SQLAlchemy | REST | OpenAPI | WebSockets | Flask \\
-Datos: & PostgreSQL | Alembic | MySQL | Redis | SQLite | MinIO / S3 \\
+Backend y datos: & FastAPI | Pydantic | SQLAlchemy | OpenAPI | PostgreSQL | Alembic | MySQL | Redis | MinIO / S3 \\
 Frontend: & React | TypeScript | TanStack Query | Vite | Tailwind CSS | Chrome Extensions MV3 \\
-Calidad: & Pytest | Playwright | Vitest | mypy | Ruff | tests de arquitectura y contratos \\
-DevOps: & Docker / Compose | Linux / Ubuntu Server | GitHub Actions | Caddy | Nginx | Cloudflare Tunnel | backups y restore \\
+Calidad y proceso: & Pytest | Playwright | Vitest | mypy | Ruff | GitHub Actions | PRs y releases | Jira | Scrum \\
+DevOps: & Docker / Compose | Ubuntu Server | Caddy | Nginx | Cloudflare Tunnel | backups y restore \\
 Integraciones: & ARCA (WSAA / WSFEv1) | OpenAI API | Selenium | generación de PDF \\
-Proceso: & Git | GitHub (issues, PRs, releases) | Jira | Scrum \\
 Idiomas: & Español nativo | Inglés básico (en formación) \\
 \end{tabularx}
 
