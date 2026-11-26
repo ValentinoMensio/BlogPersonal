@@ -14,7 +14,7 @@ export const QUICK_FACTS = [
 	{ label: 'Experiencia', value: '2 sistemas propios en producción para clientes reales, 1 producto SaaS y proyectos en equipo con Scrum' },
 	{ label: 'Stack principal', value: 'Python, FastAPI, PostgreSQL, React, TypeScript, Docker' },
 	{ label: 'Ubicación', value: 'Córdoba, Argentina · remoto o híbrido' },
-	{ label: 'Idiomas', value: 'Español nativo · Inglés técnico (lectura de documentación), en estudio' },
+	{ label: 'Idiomas', value: 'Español nativo · Inglés básico (en formación)' },
 ];
 
 export const HIGHLIGHTS = [
@@ -63,7 +63,7 @@ export const PROJECTS: Project[] = [
 		],
 		impact: [
 			'Primera instalación productiva: un showroom de indumentaria infantil que vende en consignación, con POS, etiquetas con código de barras, escaneo por cámara o lectora, catálogo con imágenes y liquidaciones a consignantes.',
-			'Llevé el producto de la primera línea de código a producción en cuatro meses, con 10 versiones publicadas y entregas iterativas a partir del uso real.',
+			'Llevé el producto de la primera línea de código a producción en cuatro meses, con 14 versiones publicadas y entregas iterativas a partir del uso real.',
 		],
 		metrics: [
 			{ value: '19', label: 'módulos' },
@@ -110,7 +110,7 @@ export const PROJECTS: Project[] = [
 		slug: 'beleadai',
 		name: 'BeLeadAI',
 		tagline: 'Plataforma de prospección comercial con extensión Chrome y backend propio.',
-		period: 'Noviembre 2025',
+		period: 'Noviembre 2025 – marzo 2026',
 		status: 'product',
 		statusLabel: 'Producto SaaS',
 		role: 'Desarrollador Full Stack & Automatización',
@@ -132,7 +132,7 @@ export const PROJECTS: Project[] = [
 		slug: 'el-switcher',
 		name: 'El Switcher',
 		tagline: 'Juego de mesa multijugador en tiempo real, desarrollado en equipo con Scrum.',
-		period: '2024',
+		period: 'Septiembre – octubre 2024',
 		status: 'academic',
 		statusLabel: 'Proyecto en equipo · FAMAF',
 		role: 'Desarrollador Backend · Scrum Master (Sprint 2)',
@@ -160,18 +160,18 @@ export const EXPERIENCE = [
 	{
 		period: 'Abr 2026 – actualidad',
 		title: 'Granalia — cliente',
-		role: 'Full Stack (freelance)',
+		role: 'Full Stack · cliente',
 		summary:
 			'Sistema de gestión y facturación electrónica con ARCA para una fábrica de alimentos. Desarrollo, despliegue, soporte y evolución continua.',
 	},
 	{
-		period: 'Nov 2025',
+		period: 'Nov 2025 – Mar 2026',
 		title: 'BeLeadAI — producto propio',
 		role: 'Full Stack & Automatización',
 		summary: 'Plataforma de prospección con backend, colas, WebSockets y extensión Chrome MV3.',
 	},
 	{
-		period: '2024',
+		period: 'Sep – Oct 2024',
 		title: 'El Switcher — FAMAF',
 		role: 'Backend · Scrum Master',
 		summary: 'Aplicación multijugador en tiempo real desarrollada en equipo con Scrum y Jira; 95% de cobertura en backend.',
