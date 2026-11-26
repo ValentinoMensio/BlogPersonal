@@ -163,6 +163,11 @@ const personSchema = {
 										<p class="role">{project.role}</p>
 										<span class="status">{project.statusLabel}</span>
 									</div>
+									{project.image && (
+										<a class="shot" href={project.caseUrl} tabindex="-1" aria-hidden="true">
+											<Image src={project.image.src} alt="" width={800} loading="lazy" />
+										</a>
+									)}
 									<h3>{project.name}</h3>
 									<p class="tagline">{project.tagline}</p>
 									<p class="problem">{project.problem}</p>
@@ -534,6 +539,23 @@ const personSchema = {
 		display: flex;
 		flex-direction: column;
 		padding: 2rem;
+	}
+
+	.shot {
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		display: block;
+		margin: 0.5rem 0 1.25rem;
+		overflow: hidden;
+	}
+
+	.shot img {
+		aspect-ratio: 16 / 9;
+		display: block;
+		height: auto;
+		object-fit: cover;
+		object-position: top left;
+		width: 100%;
 	}
 
 	.featured-top {

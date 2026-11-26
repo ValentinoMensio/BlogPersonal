@@ -3,6 +3,8 @@ title: 'Gestión: arquitectura modular para procesos empresariales consistentes'
 description: 'Diseño de un producto con FastAPI, React y PostgreSQL: límites de dominio, contratos OpenAPI, idempotencia, POS reanudable y pruebas automatizadas.'
 pubDate: 'Nov 09 2026'
 updatedDate: 'Nov 25 2026'
+heroImage: '../../assets/Gestion/pos-venta.webp'
+heroImageZoom: true
 ---
 
 Gestión es un producto empresarial modular y reutilizable que desarrollo para conectar procesos comerciales, inventario, logística, facturación y finanzas. El desafío no es solamente ofrecer pantallas para cargar datos: es conseguir que una operación conserve su significado cuando intervienen varios dominios, aparecen reintentos o cambian los datos maestros.
@@ -82,9 +84,9 @@ En POS, el alcance operativo implementado contempla **efectivo y transferencia b
 
 ### Una interfaz sobre hechos del servidor
 
-![Checkout POS de Gestión con carrito, cantidades, contexto comercial y resumen calculado por el servidor; todos los datos son sintéticos](../../assets/Gestion/pos-checkout.webp)
+![Cobro en el mostrador de Gestión v0.10.0: total calculado por el servidor, medios de pago habilitados para la caja, importe recibido y vuelto](../../assets/Gestion/pos-cobro.webp)
 
-La captura proviene de un entorno de aceptación aislado con datos exclusivamente ficticios. Muestra un carrito recuperado durante una prueba de POS; no es una operación comercial real ni evidencia de facturación fiscal productiva. Los nombres e identificadores visibles pertenecen a datos de prueba.
+La captura proviene de un entorno de demostración aislado de la v0.10.0, con datos exclusivamente ficticios: productos, marcas, proveedoras e imágenes fueron inventados para este artículo. No muestra operaciones ni datos de ningún cliente.
 
 El trabajo de interfaz acompaña al modelo: el contexto comercial, los artículos y los totales deben representar el estado que reconoce el backend, no una segunda interpretación del negocio calculada en el navegador.
 
@@ -153,6 +155,38 @@ Poner el sistema frente a usuarias reales ordenó las prioridades. Entre las ver
 - **Alta rápida:** crear un producto con su precio de venta en una sola operación atómica desde el formulario.
 
 Cada cambio siguió el mismo circuito: issue, rama, pull request con tests y una versión etiquetada.
+
+### Recorrido por la versión en producción
+
+Las capturas siguientes son de la v0.10.0 corriendo en un entorno de demostración aislado, con un inventario ficticio de una tienda de ropa infantil: los productos, las marcas, las proveedoras y las ilustraciones de las prendas son inventados. Muestran las mismas pantallas que usa el cliente, sin exponer sus datos.
+
+**Venta en el mostrador.** La cajera escanea la etiqueta con una lectora o con la cámara del celular; cada código suma una unidad al carrito y el servidor recalcula el total con la lista de precios de la caja.
+
+![Venta en curso en el mostrador de Gestión: tres prendas escaneadas con imagen, talle, edad y precio, y el total calculado por el servidor](../../assets/Gestion/pos-venta.webp)
+
+**Cobro y comprobante.** El cobro registra medio de pago, importe recibido y vuelto. Al confirmar, el checkout coordina la venta, el comprobante interno, la cobranza y el movimiento de fondos, cada uno en su módulo, y la pantalla enlaza esos hechos.
+
+![Venta cobrada: resumen con artículos, pago en efectivo con vuelto y enlaces a la venta, el comprobante interno, la cobranza y el movimiento de tesorería](../../assets/Gestion/pos-cobrada.webp)
+
+**Cierre de caja.** El arqueo compara el efectivo contado con el esperado, que calcula Tesorería a partir del fondo inicial y los cobros de la sesión. Si la diferencia supera la tolerancia de la caja, el cierre queda pendiente de aprobación por otra persona.
+
+![Cierre de caja con arqueo: fondo inicial, ventas en efectivo, efectivo esperado y efectivo contado sin diferencia](../../assets/Gestion/pos-cierre.webp)
+
+**Catálogo con atributos e imágenes.** Cada prenda es un producto con su variante; el nombre de la variante se arma con los atributos de la empresa (talle, edad, sexo) y las imágenes aparecen en listados, buscador y mostrador.
+
+![Listado de productos con miniaturas, marca, categoría y filtros](../../assets/Gestion/catalogo-productos.webp)
+
+![Ficha de producto con datos, historial de auditoría y galería de imágenes](../../assets/Gestion/catalogo-producto.webp)
+
+**Etiquetas con código de barras.** Las etiquetas se generan con el precio vigente de la lista elegida y un código Code 128 que después lee el mostrador. Se descargan como imágenes al ancho exacto del cabezal de la impresora térmica.
+
+![Impresión de etiquetas de precio con nombre, variante, precio y código de barras, agrupadas de a diez por imagen](../../assets/Gestion/etiquetas.webp)
+
+**Consignación.** El stock consignado se muestra separado del propio, por consignante, con lo recibido, vendido, devuelto y disponible. La liquidación toma las ventas del período, aplica el porcentaje acordado y deja la deuda con la consignante en Cuentas a pagar.
+
+![Stock consignado por consignante con unidades recibidas, vendidas, devueltas y disponibles](../../assets/Gestion/consignacion-stock.webp)
+
+![Liquidación a una consignante: ventas liquidadas, porcentaje, importe para la consignante y para la empresa, y deuda saldada](../../assets/Gestion/consignacion-liquidacion.webp)
 
 ### Despliegue y operación
 

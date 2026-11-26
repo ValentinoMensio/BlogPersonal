@@ -1,5 +1,8 @@
 // Fuente única del contenido de perfil y proyectos que usan Inicio, Proyectos y Sobre mí.
 // Las cifras se relevaron de los repositorios el 2026-11-25; actualizarlas aquí.
+import type { ImageMetadata } from 'astro';
+import GestionShot from '../assets/Gestion/pos-venta.webp';
+import GranaliaShot from '../assets/Granalia/panel_gestion.png';
 
 export const ROLE_TITLE = 'Desarrollador Full Stack · Backend';
 export const LOCATION = 'Córdoba, Argentina';
@@ -37,6 +40,7 @@ export type Project = {
 	stack: string[];
 	caseUrl: string;
 	featured?: boolean;
+	image?: { src: ImageMetadata; alt: string };
 };
 
 export const PROJECTS: Project[] = [
@@ -70,6 +74,7 @@ export const PROJECTS: Project[] = [
 		stack: ['Python', 'FastAPI', 'SQLAlchemy', 'PostgreSQL', 'Alembic', 'React', 'TypeScript', 'TanStack Query', 'OpenAPI', 'Docker', 'MinIO', 'Pytest', 'Playwright'],
 		caseUrl: '/blog/gestion-arquitectura-modular/',
 		featured: true,
+		image: { src: GestionShot, alt: 'Venta en el mostrador de Gestión v0.10.0 con datos ficticios' },
 	},
 	{
 		slug: 'granalia',
@@ -99,6 +104,7 @@ export const PROJECTS: Project[] = [
 		stack: ['FastAPI', 'React', 'PostgreSQL', 'Alembic', 'ARCA WSFEv1', 'ReportLab', 'MapLibre', 'Docker', 'Caddy'],
 		caseUrl: '/blog/granalia-sistema-facturacion/',
 		featured: true,
+		image: { src: GranaliaShot, alt: 'Panel de gestión de Granalia con datos ficticios' },
 	},
 	{
 		slug: 'beleadai',
