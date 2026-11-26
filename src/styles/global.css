@@ -172,8 +172,75 @@ table {
 
 img {
 	border-radius: var(--radius-md);
+	cursor: zoom-in;
 	height: auto;
 	max-width: 100%;
+}
+
+.has-image-lightbox {
+	overflow: hidden;
+}
+
+.image-lightbox {
+	align-items: center;
+	background: rgba(5, 7, 10, 0.92);
+	backdrop-filter: blur(10px);
+	display: none;
+	inset: 0;
+	justify-content: center;
+	padding: clamp(1rem, 3vw, 3rem);
+	position: fixed;
+	z-index: 9999;
+}
+
+.image-lightbox--open {
+	display: flex;
+}
+
+.image-lightbox__image {
+	border: 1px solid var(--border-hover);
+	border-radius: var(--radius-lg);
+	box-shadow: 0 24px 90px rgba(0, 0, 0, 0.65);
+	cursor: zoom-out;
+	max-height: 86vh;
+	max-width: min(96vw, 1500px);
+	object-fit: contain;
+}
+
+.image-lightbox__caption {
+	bottom: 1.25rem;
+	color: var(--text-secondary);
+	font-size: 0.9rem;
+	left: 50%;
+	max-width: min(90vw, 900px);
+	position: fixed;
+	text-align: center;
+	transform: translateX(-50%);
+}
+
+.image-lightbox__close {
+	align-items: center;
+	background: rgba(255, 255, 255, 0.08);
+	border: 1px solid var(--border-hover);
+	border-radius: 999px;
+	color: var(--text-primary);
+	cursor: pointer;
+	display: flex;
+	font-size: 2rem;
+	height: 3rem;
+	justify-content: center;
+	line-height: 1;
+	position: fixed;
+	right: 1rem;
+	top: 1rem;
+	transition: background 0.15s ease, transform 0.15s ease;
+	width: 3rem;
+	z-index: 1;
+}
+
+.image-lightbox__close:hover {
+	background: rgba(255, 255, 255, 0.14);
+	transform: scale(1.04);
 }
 
 textarea,

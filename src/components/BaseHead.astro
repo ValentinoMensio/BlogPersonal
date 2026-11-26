@@ -55,3 +55,74 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<script is:inline>
+(() => {
+	const lightboxId = 'image-lightbox';
+	let activeImage = null;
+
+	function ensureLightbox() {
+		let lightbox = document.getElementById(lightboxId);
+		if (lightbox) return lightbox;
+
+		lightbox = document.createElement('div');
+		lightbox.id = lightboxId;
+		lightbox.className = 'image-lightbox';
+		lightbox.setAttribute('aria-hidden', 'true');
+		lightbox.innerHTML = `
+			<button class="image-lightbox__close" type="button" aria-label="Cerrar imagen ampliada">×</button>
+			<img class="image-lightbox__image" alt="" />
+			<div class="image-lightbox__caption"></div>
+		`;
+		document.body.appendChild(lightbox);
+		return lightbox;
+	}
+
+	function closeLightbox() {
+		const lightbox = document.getElementById(lightboxId);
+		if (!lightbox) return;
+		lightbox.classList.remove('image-lightbox--open');
+		lightbox.setAttribute('aria-hidden', 'true');
+		document.body.classList.remove('has-image-lightbox');
+		activeImage?.focus?.();
+		activeImage = null;
+	}
+
+	function openLightbox(image) {
+		const src = image.currentSrc || image.src;
+		if (!src) return;
+		activeImage = image;
+		const lightbox = ensureLightbox();
+		const preview = lightbox.querySelector('.image-lightbox__image');
+		const caption = lightbox.querySelector('.image-lightbox__caption');
+		preview.src = src;
+		preview.alt = image.alt || '';
+		caption.textContent = image.alt || '';
+		lightbox.classList.add('image-lightbox--open');
+		lightbox.setAttribute('aria-hidden', 'false');
+		document.body.classList.add('has-image-lightbox');
+		lightbox.querySelector('.image-lightbox__close')?.focus?.();
+	}
+
+	document.addEventListener('click', (event) => {
+		const target = event.target;
+		if (!(target instanceof Element)) return;
+		if (target.closest('.image-lightbox__close')) {
+			closeLightbox();
+			return;
+		}
+		if (target.id === lightboxId) {
+			closeLightbox();
+			return;
+		}
+		const image = target.closest('img');
+		if (!image || image.closest('.image-lightbox')) return;
+		event.preventDefault();
+		openLightbox(image);
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') closeLightbox();
+	});
+})();
+</script>
